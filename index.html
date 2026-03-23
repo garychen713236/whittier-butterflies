@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  body { font-family:"Segoe UI","Noto Sans TC",Arial,sans-serif; max-width:960px; margin:0 auto; padding:14px 18px; background:#f4f4f4; color:#2c2c2c; line-height:1.8; font-size:0.91em; }
+
+  .master-header { text-align:center; background:linear-gradient(135deg,#2c5f2e,#4a8a4a); color:#fff; border-radius:12px; padding:14px 20px; margin-bottom:16px; }
+  .master-header h1 { margin:0; font-size:1.25em; }
+  .master-header p  { margin:4px 0 0; font-size:0.82em; opacity:.9; }
+
+  .tab-row-label { font-size:0.73em; font-weight:bold; color:#555; margin:10px 0 4px 2px; text-transform:uppercase; letter-spacing:.05em; }
+  .tabs { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:5px; }
+
+  /* ALL TAB TEXT BLACK */
+  .tab-btn {
+    padding:7px 13px; border:2px solid #bbb; border-radius:8px;
+    cursor:pointer; font-size:0.79em; font-weight:bold;
+    color:#000 !important; background:#fff;
+    transition:all .2s; white-space:nowrap;
+  }
+  .tab-btn:hover { border-color:#888; background:#f0f0f0; }
+  .tab-btn.active { border-width:3px; color:#000 !important; }
+
+  /* Active highlight per theme */
+  .tab-btn.c-wts.active  { background:#d8f0d0; border-color:#4a9a30; }
+  .tab-btn.c-pv.active   { background:#e0e0ff; border-color:#5555cc; }
+  .tab-btn.c-ans.active  { background:#d8f4d8; border-color:#2d7a1f; }
+  .tab-btn.c-wgs.active  { background:#fff4cc; border-color:#c88800; }
+  .tab-btn.c-dog.active  { background:#fff8cc; border-color:#c8a000; }
+  .tab-btn.c-ra.active   { background:#fde8e8; border-color:#aa2222; }
+  .tab-btn.c-mon.active  { background:#fff0d8; border-color:#d07000; }
+  .tab-btn.c-mc.active   { background:#fde8e8; border-color:#6e2222; }
+  .tab-btn.c-pl.active   { background:#ffe8d8; border-color:#d05a10; }
+  .tab-btn.c-cbw.active  { background:#ddeeff; border-color:#2e6b9e; }
+  .tab-btn.c-ss.active   { background:#d8f8f8; border-color:#208080; }
+  .tab-btn.c-sd.active   { background:#e8e8fc; border-color:#404080; }
+
+  .guide { display:none; }
+  .guide.active { display:block; }
+
+  .guide-header { text-align:center; padding:12px 0 4px; }
+  .guide-header h1 { font-size:1.35em; margin:0 0 2px; }
+  .guide-header p  { font-style:italic; color:#888; margin:0 0 14px; font-size:.88em; }
+
+  .intro-box  { border-radius:10px; padding:12px 16px; margin-bottom:22px; font-size:.9em; }
+  .alert-box  { border-radius:10px; padding:12px 16px; margin-bottom:22px; font-size:.9em; }
+
+  .section { margin-bottom:26px; padding-left:15px; }
+  .section h2 { font-size:1.02em; margin-bottom:9px; }
+
+  .bilingual { display:grid; grid-template-columns:1fr 1fr; gap:13px; margin-bottom:10px; }
+  .en  { border-radius:8px; padding:11px 13px; font-size:.91em; }
+  .zh  { border-radius:8px; padding:11px 13px; font-size:.91em; }
+  .lang-label { font-size:.7em; font-weight:bold; letter-spacing:.05em; margin-bottom:4px; text-transform:uppercase; }
+
+  .funfact { border-radius:10px; padding:14px 18px; margin-top:22px; text-align:center; font-size:.91em; }
+  .funfact .emoji { font-size:1.5em; }
+
+  .qr-section { margin-top:24px; padding-top:16px; }
+  .qr-section h2 { text-align:center; font-size:.95em; margin-bottom:13px; }
+  .qr-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:15px; text-align:center; }
+  .qr-item { border-radius:10px; padding:11px 8px; }
+  .qr-item p { font-size:.72em; color:#4a4a4a; margin-top:6px; margin-bottom:0; line-height:1.35; }
+  .qr-box  { display:flex; justify-content:center; }
+
+  hr  { border:none; border-top:1px solid #ddd; margin:5px 0 10px; }
+  ul  { margin:4px 0 0; padding-left:18px; }
+  li  { margin-bottom:4px; }
+
+  /* ── COLOUR THEMES ── */
+  .t-wts h1,.t-wts .section h2{color:#4a7c3f}.t-wts .section{border-left:4px solid #7aba50}
+  .t-wts .intro-box{background:#edfae0;border:2px solid #7aba50;color:#1a4a0a}
+  .t-wts .en{background:#f0fae8}.t-wts .zh{background:#f8fde8}
+  .t-wts .en .lang-label{color:#4a7c3f}.t-wts .zh .lang-label{color:#5a8a00}
+  .t-wts .funfact{background:linear-gradient(135deg,#f0fae8,#f8fde8);border:1px solid #7aba50;color:#1a3a0a}
+  .t-wts .qr-section{border-top:2px dashed #c8e0b0}.t-wts .qr-item{background:#f0fae8}.t-wts .qr-item strong{color:#4a7c3f}
+
+  .t-pv h1,.t-pv .section h2{color:#2a2a8a}.t-pv .section{border-left:4px solid #5555cc}
+  .t-pv .intro-box{background:#e8e8ff;border:2px solid #5555cc;color:#1a1a4a}
+  .t-pv .en{background:#ebebff}.t-pv .zh{background:#eef5ee}
+  .t-pv .en .lang-label{color:#2a2a8a}.t-pv .zh .lang-label{color:#2a6a2a}
+  .t-pv .funfact{background:linear-gradient(135deg,#e8e8ff,#eef5ee);border:1px solid #5555cc;color:#1a1a3a}
+  .t-pv .qr-section{border-top:2px dashed #9090dd}.t-pv .qr-item{background:#ebebff}.t-pv .qr-item strong{color:#2a2a8a}
+
+  .t-ans h1,.t-ans .section h2{color:#2d6a1f}.t-ans .section{border-left:4px solid #6abf47}
+  .t-ans .intro-box{background:#edfae0;border:2px solid #6abf47;color:#1a4a0a}
+  .t-ans .en{background:#edfae0}.t-ans .zh{background:#f5fde8}
+  .t-ans .en .lang-label{color:#2d6a1f}.t-ans .zh .lang-label{color:#4a7a00}
+  .t-ans .funfact{background:linear-gradient(135deg,#edfae0,#f5fde8);border:1px solid #6abf47;color:#1a3a0a}
+  .t-ans .qr-section{border-top:2px dashed #a0d870}.t-ans .qr-item{background:#edfae0}.t-ans .qr-item strong{color:#2d6a1f}
+
+  .t-wgs h1,.t-wgs .section h2{color:#7a5500}.t-wgs .section{border-left:4px solid #e8a800}
+  .t-wgs .intro-box{background:#fff8d8;border:2px solid #e8a800;color:#4a3600}
+  .t-wgs .en{background:#fff8d8}.t-wgs .zh{background:#fffae0}
+  .t-wgs .en .lang-label{color:#7a5500}.t-wgs .zh .lang-label{color:#8b6800}
+  .t-wgs .funfact{background:linear-gradient(135deg,#fff8d8,#fffae0);border:1px solid #e8a800;color:#3a2800}
+  .t-wgs .qr-section{border-top:2px dashed #d4c060}.t-wgs .qr-item{background:#fff8d8}.t-wgs .qr-item strong{color:#7a5500}
+
+  .t-dog h1,.t-dog .section h2{color:#7a5c00}.t-dog .section{border-left:4px solid #d4a800}
+  .t-dog .intro-box{background:#fff8d0;border:2px solid #d4a800;color:#4a3800}
+  .t-dog .en{background:#fdf6e0}.t-dog .zh{background:#f4fae8}
+  .t-dog .en .lang-label{color:#7a5c00}.t-dog .zh .lang-label{color:#4a7a00}
+  .t-dog .funfact{background:linear-gradient(135deg,#fff8d0,#f4fae8);border:1px solid #d4a800;color:#3a2800}
+  .t-dog .qr-section{border-top:2px dashed #d4b800}.t-dog .qr-item{background:#fdf6e0}.t-dog .qr-item strong{color:#7a5c00}
+
+  .t-ra h1,.t-ra .section h2{color:#8b1a1a}.t-ra .section{border-left:4px solid #cc3300}
+  .t-ra .intro-box{background:#fdf3f0;border:2px solid #cc3300;color:#3a0a0a}
+  .t-ra .en{background:#fdf3f0}.t-ra .zh{background:#fff8ec}
+  .t-ra .en .lang-label{color:#8b1a1a}.t-ra .zh .lang-label{color:#b8740b}
+  .t-ra .funfact{background:linear-gradient(135deg,#fff0ec,#fff8dc);border:1px solid #cc6644;color:#4a1a00}
+  .t-ra .qr-section{border-top:2px dashed #e0b0a0}.t-ra .qr-item{background:#fdf3f0}.t-ra .qr-item strong{color:#8b1a1a}
+
+  .t-mon h1,.t-mon .section h2{color:#b85c00}.t-mon .section{border-left:4px solid #f0820a}
+  .t-mon .alert-box{background:#fff3cd;border:2px solid #f0a500;color:#5a3e00}
+  .t-mon .en{background:#fff7ee}.t-mon .zh{background:#fef9ec}
+  .t-mon .en .lang-label{color:#b85c00}.t-mon .zh .lang-label{color:#8b6914}
+  .t-mon .funfact{background:linear-gradient(135deg,#fff3dc,#fef9ec);border:1px solid #e09030;color:#4a2800}
+  .t-mon .qr-section{border-top:2px dashed #e8c080}.t-mon .qr-item{background:#fff7ee}.t-mon .qr-item strong{color:#b85c00}
+
+  .t-mc h1,.t-mc .section h2{color:#5a1a1a}.t-mc .section{border-left:4px solid #8b3030}
+  .t-mc .intro-box{background:#fdf0f0;border:2px solid #8b3030;color:#3a0a0a}
+  .t-mc .en{background:#fdf0f0}.t-mc .zh{background:#fef8f0}
+  .t-mc .en .lang-label{color:#5a1a1a}.t-mc .zh .lang-label{color:#7a4000}
+  .t-mc .funfact{background:linear-gradient(135deg,#fdf0f0,#fef8f0);border:1px solid #8b3030;color:#3a0a0a}
+  .t-mc .qr-section{border-top:2px dashed #c09090}.t-mc .qr-item{background:#fdf0f0}.t-mc .qr-item strong{color:#5a1a1a}
+
+  .t-pl h1,.t-pl .section h2{color:#b84800}.t-pl .section{border-left:4px solid #f07030}
+  .t-pl .intro-box{background:#fff4ee;border:2px solid #f07030;color:#4a1800}
+  .t-pl .en{background:#fff4ee}.t-pl .zh{background:#fff8f0}
+  .t-pl .en .lang-label{color:#b84800}.t-pl .zh .lang-label{color:#8b5000}
+  .t-pl .funfact{background:linear-gradient(135deg,#fff4ee,#fff8f0);border:1px solid #f07030;color:#3a1800}
+  .t-pl .qr-section{border-top:2px dashed #f0a080}.t-pl .qr-item{background:#fff4ee}.t-pl .qr-item strong{color:#b84800}
+
+  .t-cbw h1,.t-cbw .section h2{color:#2e6b9e}.t-cbw .section{border-left:4px solid #6aaddb}
+  .t-cbw .intro-box{background:#e8f4fd;border:2px solid #6aaddb;color:#1a3a5c}
+  .t-cbw .en{background:#eef6fc}.t-cbw .zh{background:#f0f8ee}
+  .t-cbw .en .lang-label{color:#2e6b9e}.t-cbw .zh .lang-label{color:#3a7a3a}
+  .t-cbw .funfact{background:linear-gradient(135deg,#e8f4fd,#f0f8ee);border:1px solid #6aaddb;color:#1a3a1a}
+  .t-cbw .qr-section{border-top:2px dashed #a0c8e0}.t-cbw .qr-item{background:#eef6fc}.t-cbw .qr-item strong{color:#2e6b9e}
+
+  .t-ss h1,.t-ss .section h2{color:#1a5a5a}.t-ss .section{border-left:4px solid #30a0a0}
+  .t-ss .intro-box{background:#e8fafa;border:2px solid #30a0a0;color:#0a2a2a}
+  .t-ss .en{background:#e8fafa}.t-ss .zh{background:#f0fcfc}
+  .t-ss .en .lang-label{color:#1a5a5a}.t-ss .zh .lang-label{color:#007070}
+  .t-ss .funfact{background:linear-gradient(135deg,#e8fafa,#f0fcfc);border:1px solid #30a0a0;color:#0a2a2a}
+  .t-ss .qr-section{border-top:2px dashed #80c8c8}.t-ss .qr-item{background:#e8fafa}.t-ss .qr-item strong{color:#1a5a5a}
+
+  .t-sd h1,.t-sd .section h2{color:#2a2a5a}.t-sd .section{border-left:4px solid #6060aa}
+  .t-sd .intro-box{background:#eeeefc;border:2px solid #6060aa;color:#0a0a2a}
+  .t-sd .en{background:#eeeefc}.t-sd .zh{background:#f4f4fe}
+  .t-sd .en .lang-label{color:#2a2a5a}.t-sd .zh .lang-label{color:#404080}
+  .t-sd .funfact{background:linear-gradient(135deg,#eeeefc,#f4f4fe);border:1px solid #6060aa;color:#0a0a2a}
+  .t-sd .qr-section{border-top:2px dashed #9090cc}.t-sd .qr-item{background:#eeeefc}.t-sd .qr-item strong{color:#2a2a5a}
+</style>
+</head>
+<body>
+
+<div class="master-header">
+  <h1>🦋 Whittier Narrows Nature Center — Butterfly Docent Guide</h1>
+  <p>惠提爾納洛斯自然中心 蝴蝶導覽手冊 ｜ 12 Species 12種 ｜ Bilingual 中英對照</p>
+</div>
+
+<div class="tab-row-label">🟡 Swallowtails & Large Butterflies 鳳蝶與大型蝴蝶</div>
+<div class="tabs">
+  <button class="tab-btn c-wts active" onclick="show('wts')">🦋 Western Tiger Swallowtail<br>西方虎鳳蝶</button>
+  <button class="tab-btn c-pv"         onclick="show('pv')">🦋 Pipevine Swallowtail<br>管花鳳蝶</button>
+  <button class="tab-btn c-ans"        onclick="show('ans')">🦋 Anise Swallowtail<br>茴芹鳳蝶</button>
+  <button class="tab-btn c-wgs"        onclick="show('wgs')">🦋 Western Giant Swallowtail<br>西方巨鳳蝶</button>
+  <button class="tab-btn c-dog"        onclick="show('dog')">🦋 California Dogface<br>加州狗臉蝶</button>
+</div>
+
+<div class="tab-row-label">🔴 Brush-footed Butterflies 蛺蝶類</div>
+<div class="tabs">
+  <button class="tab-btn c-ra"  onclick="show('ra')">🦋 Red Admiral<br>紅蛺蝶</button>
+  <button class="tab-btn c-mon" onclick="show('mon')">🦋 Monarch Butterfly<br>帝王蝶</button>
+  <button class="tab-btn c-mc"  onclick="show('mc')">🦋 Mourning Cloak<br>哀蛺蝶</button>
+  <button class="tab-btn c-pl"  onclick="show('pl')">🦋 Painted Lady<br>彩蛺蝶</button>
+</div>
+
+<div class="tab-row-label">⚪ Whites, Sulphurs & Skippers 粉蝶與弄蝶</div>
+<div class="tabs">
+  <button class="tab-btn c-cbw" onclick="show('cbw')">🦋 Cabbage White<br>菜粉蝶</button>
+  <button class="tab-btn c-ss"  onclick="show('ss')">🦋 Sandhill Skipper<br>沙丘弄蝶</button>
+  <button class="tab-btn c-sd"  onclick="show('sd')">🦋 Sleepy Duskywing<br>睡暮翅弄蝶</button>
+</div>
+
+<!-- ══════════════ WESTERN TIGER SWALLOWTAIL ══════════════ -->
+<div class="guide t-wts active" id="g-wts">
+  <div class="guide-header">
+    <h1>🦋 Western Tiger Swallowtail ／ 西方虎鳳蝶</h1>
+    <p><em>Papilio rutulus</em> — Bilingual Docent Guide 中英對照導覽手冊</p>
+  </div>
+
+  <div class="section"><h2>🎨 Appearance ／ 外觀特徵</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>These are large butterflies with a wingspan of 2¾ to 4 inches (7–10 cm), making them one of the largest butterflies in western gardens. They are predominantly yellow and black, with the wings striped like a tiger — four black stripes on yellow — on both the upper and lower surfaces. The hind-wings have elegant "tails" reminiscent of a swallow's tail feathers, which is how the family got its name. The lower inner margins of the hind-wings also display a beautiful dot of blue and orange. Females are larger than males but otherwise appear similar.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>西方虎鳳蝶是體型相當大的蝴蝶，翼展可達 7 至 10 公分，是西部花園中最大型的蝴蝶之一。翅膀以鮮黃色為底，帶有四條黑色虎紋，無論正面或背面皆相同。後翅末端有優雅的「尾突」，形似燕子的尾羽，這也是「燕尾蝶（Swallowtail）」名稱的由來。後翅內緣還有美麗的藍色與橙色斑點。雌蝶體型略大於雄蝶，但外觀相似。</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🗺️ Range & Habitat ／ 分布範圍與棲息地</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>These butterflies are found from the northwestern regions of Canada all the way down to the southern tip of Baja California, extending eastward through the Dakotas, Colorado, and New Mexico. They prefer woodlands near rivers and streams, but are also commonly found in wooded suburbs, parks, and roadsides. Whittier Narrows Nature Center, with its riparian corridors along the San Gabriel River, is prime habitat for this species!</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>西方虎鳳蝶的分布從加拿大西北部一路延伸至下加利福尼亞半島南端，向東涵蓋達科他州、科羅拉多州及新墨西哥州。牠們偏好棲息在河流與溪流旁的林地，也常見於樹木繁茂的郊區、公園與路邊。惠提爾納洛斯自然中心沿著聖蓋博河的河岸林帶，正是這種蝴蝶理想的棲息環境！</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🌿 What They Eat ／ 食物來源</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English — Caterpillars</div>Caterpillars feed on the leaves of riparian host plants including willows, cottonwoods, aspen, alder, elm, and California Sycamore.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文 — 毛毛蟲</div>毛毛蟲以河岸植物的葉片為食，常見寄主植物包括柳樹、棉白楊、白楊、赤楊、榆樹及加州懸鈴木。</div>
+    </div>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English — Adults</div>Adult butterflies feed on flower nectar from thistles, California buckeye, zinnia, and many others, making them important pollinators. Males also gather at streams and mud puddles to drink minerals — a behavior called "mud-puddling."</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文 — 成蝶</div>成蝶以薊花、加州七葉樹、百日草等花蜜為食，是重要的授粉者。雄蝶還常聚集在溪流或水窪旁「吸水」，這種行為稱為「泥濘吸水（mud-puddling）」，目的是從泥水中攝取礦物質。</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🔄 Life Cycle & Lifespan ／ 生命週期與壽命</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>The Western Tiger Swallowtail undergoes <strong>complete metamorphosis</strong>: egg → caterpillar → chrysalis → adult.
+        <ul>
+          <li><strong>Eggs:</strong> Females lay shiny green eggs one at a time on host plant leaves — up to 100 eggs total.</li>
+          <li><strong>Caterpillars:</strong> Young caterpillars resemble bird droppings for camouflage. As they grow, they turn bright green with large yellow eyespots. They can also extend an orange forked organ called the <em>osmeterium</em> to mimic a snake and scare off predators.</li>
+          <li><strong>Chrysalis:</strong> Summer chrysalids are bright green; fall/winter ones turn brown to blend with wood.</li>
+          <li><strong>Adults:</strong> Adult lifespan is only <strong>6 to 14 days</strong>.</li>
+          <li><strong>Broods:</strong> In warm Southern California, there are 2–3 generations per year. Summer development can take as little as 15–20 days from egg to butterfly.</li>
+        </ul>
+      </div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>西方虎鳳蝶經歷<strong>完全變態</strong>：卵 → 幼蟲 → 蛹 → 成蝶。
+        <ul>
+          <li><strong>卵：</strong>雌蝶將亮綠色的卵一粒粒產在寄主植物葉片上，一生可產下多達一百粒。</li>
+          <li><strong>幼蟲：</strong>剛孵化時外觀像鳥糞，是保護色。成長後變為鮮綠色，帶有黃色大眼斑。遇到天敵時會伸出橙紅色的「臭角（osmeterium）」，模仿蛇的樣子嚇退敵人。</li>
+          <li><strong>蛹：</strong>夏季的蛹呈鮮綠色；秋冬季的蛹變成褐色，與枯木融為一體。</li>
+          <li><strong>成蝶：</strong>壽命只有短短 <strong>6 至 14 天</strong>。</li>
+          <li><strong>世代數：</strong>溫暖的南加州每年可繁殖 2 至 3 個世代，夏季從卵到羽化最快只需 15 至 20 天。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section"><h2>💛 Mating Behavior ／ 求偶與交配行為</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>Males patrol canyons and hilltops near water, waiting for receptive females to mate. After fertilization, the female lays eggs one at a time on different host plants to ensure each caterpillar has enough food. The cycle then begins again.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>雄蝶在峽谷、山丘頂端或水塘附近來回巡邏飛行，守候雌蝶前來交配。雌蝶受精後，將卵一粒粒產在不同寄主植物的葉片上，確保每隻幼蟲都有充足食物，生命的循環就此重新開始。</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🌍 Conservation Status ／ 保育現況</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>The Western Tiger Swallowtail is rated <strong>G5 — Globally Secure</strong>, meaning its overall population is healthy and stable. No special conservation measures are currently required.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>西方虎鳳蝶目前被評定為「<strong>全球穩定（G5）</strong>」等級，代表整體族群數量健康穩定，目前不需要特別的保育措施。</div>
+    </div>
+  </div>
+
+  <div class="funfact"><div class="emoji">🌸</div><strong>Fun Fact for Visitors ／ 給訪客的趣味小知識</strong><hr>
+    <p><em>"This butterfly's entire adult life lasts less than two weeks — so if you're seeing it today, you're witnessing one of nature's most beautiful and fleeting miracles!"</em></p>
+    <p>「這隻美麗的蝴蝶，成蟲的一生只有短短不到兩個星期。您今天在這裡看到牠，正是見證了大自然最美麗、也最短暫的奇蹟！」</p>
+  </div>
+  <div class="qr-section"><h2>📱 Scan to See More Photos ／ 掃描查看更多照片</h2>
+    <div class="qr-grid">
+      <div class="qr-item"><div class="qr-box" id="q-wts1"></div><p><strong>Adult Butterfly 成蝶</strong></p></div>
+      <div class="qr-item"><div class="qr-box" id="q-wts2"></div><p><strong>Caterpillar 毛毛蟲</strong></p></div>
+      <div class="qr-item"><div class="qr-box" id="q-wts3"></div><p><strong>Chrysalis 蛹</strong></p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ PIPEVINE SWALLOWTAIL ══════════════ -->
+<div class="guide t-pv" id="g-pv">
+  <div class="guide-header">
+    <h1>🦋 Pipevine Swallowtail ／ 管花鳳蝶</h1>
+    <p><em>Battus philenor</em> — Bilingual Docent Guide 中英對照導覽手冊</p>
+  </div>
+  <div class="intro-box">💙 <strong>The "Blue Swallowtail" of California 加州「藍色鳳蝶」：</strong> The Pipevine Swallowtail is famous for its brilliant iridescent blue hindwings. By feeding on toxic pipevine plants, it makes itself <em>poisonous at every life stage</em> — from egg to adult. Other butterflies across North America even mimic its colors to borrow its protection!
+  <br><br>管花鳳蝶以後翅上那片璀璨、閃耀著金屬光澤的藍色而聞名。藉由取食有毒的管花（馬兜鈴）植物，牠讓自己在<em>每個生命階段——從卵到成蝶——都對天敵有毒</em>。北美洲其他蝴蝶甚至模仿牠的外觀來借用牠的保護！</div>
+
+  <div class="section"><h2>🎨 Appearance ／ 外觀特徵</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>The Pipevine Swallowtail has a wingspan of 2¾ to 5 inches (7–13 cm). The forewings are solid black on top and grayish below. The real showstopper is the <strong>hindwing</strong>: the upper surface of the male's hindwing glows with a vivid, iridescent blue-green metallic sheen — one of the most beautiful wing colors in North American butterflies. Females have the same pattern but with a duller, less iridescent blue. On the underside of the hindwing, both sexes display a gorgeous row of <strong>seven bright orange spots</strong> embedded in the metallic blue. The California subspecies (<em>B. p. hirsuta</em>) is slightly smaller and noticeably hairier than populations from other parts of the US.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>管花鳳蝶翼展約 7 至 13 公分。前翅正面為純黑色，背面呈灰色。真正令人驚嘆的是<strong>後翅</strong>：雄蝶後翅正面呈現閃耀的藍綠色金屬光澤，是北美洲蝴蝶中最美麗的翅色之一。雌蝶花紋相同，但藍色光澤較暗淡。後翅背面，雌雄皆有一排<strong>七個鮮豔的橙色斑點</strong>鑲嵌在金屬藍中。加州亞種（<em>B. p. hirsuta</em>）體型略小，且比其他地區的族群明顯更為多毛。</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🗺️ Range & Habitat ／ 分布範圍與棲息地</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>Found across much of the United States from New England south to Florida, west to Arizona, California, and Oregon, and south to Mexico. In California, it is considered the <strong>signature riparian butterfly</strong> — occurring along streams in foothill canyons wherever its host plant, California Pipevine (<em>Aristolochia californica</em>), grows. Its preferred habitats include open woodlands, woodland edges, streamsides, chaparral, meadows, and backyard gardens. Whittier Narrows, with its riparian corridors and open areas, is excellent habitat!</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>管花鳳蝶分布廣泛，從美國東北部的新英格蘭地區向南至佛羅里達州，向西延伸至亞利桑那州、加州及奧勒岡州，並向南延伸至墨西哥。在加州，牠被認為是最具代表性的<strong>河岸帶蝴蝶</strong>——凡是有加州馬兜鈴（<em>Aristolochia californica</em>）生長的丘陵峽谷溪流旁，幾乎都能發現牠的蹤跡。牠偏好的棲地包括開闊林地、林緣地帶、溪流旁、灌木叢林、草地及庭院花園。惠提爾納洛斯是絕佳棲地！</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🌿 What They Eat ／ 食物來源</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English — Caterpillars & The Toxic Secret</div>Caterpillars feed exclusively on plants of the genus <em>Aristolochia</em> — commonly known as pipevines or Dutchman's pipes. In California, the host plant is <strong>California Pipevine (<em>Aristolochia californica</em>)</strong>. These plants contain powerful toxic compounds called <strong>aristolochic acids</strong>. The caterpillars ingest and store these toxins in their bodies, making themselves unpalatable and poisonous to predators. Remarkably, the female even passes these toxins into her eggs, so even the eggs are protected! Young caterpillars feed in groups, but become solitary as they grow.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文 — 毛毛蟲與毒素秘密</div>毛毛蟲專門以<em>Aristolochia</em>屬植物（通稱「馬兜鈴」）為食。在加州，寄主植物為<strong>加州馬兜鈴（<em>Aristolochia californica</em>）</strong>。這類植物含有強效毒素——<strong>馬兜鈴酸（aristolochic acids）</strong>。毛毛蟲攝食後將毒素儲存在體內，使自己對天敵來說既難吃又有毒。更令人驚嘆的是，雌蝶甚至將這些毒素傳入卵中，連卵都受到保護！幼齡毛毛蟲群體覓食，隨著成長逐漸轉為獨居。</div>
+    </div>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English — Adults</div>Adult Pipevine Swallowtails feed on flower nectar from a wide variety of plants. Favorites include thistles, California buckeye, lupines, phlox, verbenas, lantana, and milkweed. Males are also frequently seen "mud-puddling" — gathering at moist soil to absorb minerals, which they also transfer to females during mating.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文 — 成蝶</div>成蝶以各種植物的花蜜為食，最喜愛薊花、加州七葉樹、羽扇豆、天藍繡球、馬鞭草、馬纓丹及馬利筋等。雄蝶也常見「泥濘吸水（mud-puddling）」行為，並在交配時將礦物質轉移給雌蝶。</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🔄 Life Cycle & Lifespan ／ 生命週期與壽命</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>The Pipevine Swallowtail undergoes <strong>complete metamorphosis</strong>: egg → caterpillar → chrysalis → adult.
+        <ul>
+          <li><strong>Eggs:</strong> Females lay small, round, brick-red eggs in clusters of up to 20 on young shoot tips of the pipevine plant. Eggs are already toxic — protected by toxins from the mother.</li>
+          <li><strong>Caterpillars:</strong> Dark reddish-black to black, covered with fleshy orange-red tubercles (spiky projections) running down its back. These bold warning colors signal to predators: "I am toxic — do not eat me!"</li>
+          <li><strong>Chrysalis:</strong> Either brown or green with a delicate golden filigree pattern. Some pupae develop directly into adults within weeks; others enter <em>diapause</em> (dormancy) and overwinter.</li>
+          <li><strong>Adults:</strong> In California, adults fly from late February or March through October. The number of broods can be one, two, three, or four per year depending on conditions.</li>
+        </ul>
+      </div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>管花鳳蝶經歷<strong>完全變態</strong>：卵 → 幼蟲 → 蛹 → 成蝶。
+        <ul>
+          <li><strong>卵：</strong>雌蝶將小而圓、磚紅色的卵成簇產在馬兜鈴植株的嫩芽尖端，每簇多達 20 粒。卵已含有毒素，受到母蝶的保護。</li>
+          <li><strong>幼蟲：</strong>深紅黑色至黑色，背部排列著肉質的橙紅色突起（棘狀肉突）。鮮豔的警戒色向天敵宣告：「我有毒——請勿靠近！」</li>
+          <li><strong>蛹：</strong>呈褐色或綠色，帶有細緻的金色花紋。部分蛹在數週內直接羽化；另一些則進入<em>滯育（diapause）</em>休眠狀態，以蛹越冬。</li>
+          <li><strong>成蝶：</strong>在加州，成蝶飛行期從二月底或三月延續至十月。每年世代數因地點與氣候條件而異，可能是一代至四代。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🎭 Nature's Most Imitated Butterfly ／ 大自然模仿最多的蝴蝶</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>The Pipevine Swallowtail's toxic reputation is so powerful that several other butterfly species have evolved to <strong>mimic its appearance</strong> — including the Spicebush Swallowtail, Black Swallowtail, and Red-Spotted Purple. Interestingly, <strong>in California there are currently no mimics</strong> of the Pipevine Swallowtail — because the species only arrived in California relatively recently in evolutionary terms, and there has not been enough time for other species to evolve mimicry here yet!</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>管花鳳蝶有毒的名聲如此響亮，以至於北美洲有好幾種其他蝴蝶演化出了<strong>模擬牠外觀</strong>的能力，包括鱷梨鳳蝶、黑鳳蝶及紅斑紫蛺蝶。有趣的是，<strong>加州目前沒有任何蝴蝶模仿管花鳳蝶</strong>——因為這種蝴蝶在演化時間尺度上是相當晚近才到達加州的，其他物種還沒有足夠的時間在這裡演化出模仿行為！</div>
+    </div>
+  </div>
+
+  <div class="funfact"><div class="emoji">💙</div><strong>Fun Fact for Visitors ／ 給訪客的趣味小知識</strong><hr>
+    <p><em>"This butterfly is toxic at EVERY stage of its life — even the eggs! The mother passes her plant toxins straight into her eggs to protect them before they even hatch."</em></p>
+    <p>「這種蝴蝶在生命的每一個階段都有毒——連卵也不例外！母蝶將植物毒素直接傳入卵中，在卵孵化之前就提供保護。」</p>
+  </div>
+  <div class="qr-section"><h2>📱 Scan to See More Photos ／ 掃描查看更多照片</h2>
+    <div class="qr-grid">
+      <div class="qr-item"><div class="qr-box" id="q-pv1"></div><p><strong>Adult Butterfly 成蝶</strong></p></div>
+      <div class="qr-item"><div class="qr-box" id="q-pv2"></div><p><strong>Caterpillar 毛毛蟲</strong></p></div>
+      <div class="qr-item"><div class="qr-box" id="q-pv3"></div><p><strong>Host Plant 寄主植物</strong></p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ ANISE SWALLOWTAIL ══════════════ -->
+<div class="guide t-ans" id="g-ans">
+  <div class="guide-header">
+    <h1>🦋 Anise Swallowtail ／ 茴芹鳳蝶</h1>
+    <p><em>Papilio zelicaon</em> — Bilingual Docent Guide 中英對照導覽手冊</p>
+  </div>
+  <div class="intro-box">🌿 <strong>Urban Survivor 城市倖存者：</strong> The Anise Swallowtail has brilliantly adapted to human-altered landscapes. Today it thrives in gardens, vacant lots, and roadsides by using introduced fennel and poison hemlock instead of its original native host plants. It is one of the most commonly seen swallowtails in California cities!<br><br>茴芹鳳蝶出色地適應了人類改變的環境。如今牠以引進的茴香與毒芹取代原有的本土寄主植物，活躍於花園、空地及路邊，是加州城市中最常見的鳳蝶之一！</div>
+
+  <div class="section"><h2>🎨 Appearance ／ 外觀特徵</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>The Anise Swallowtail has a wingspan of 2 to 3.1 inches (52–80 mm). Its wings are mostly yellow with broad black bands along the edges. A key identification point: the leading edge of the forewing is almost entirely solid black, giving this species a distinctly "blacker" appearance compared to the Western Tiger Swallowtail. There are striking blue spots on the rear edge of the hindwing, and yellowish-orange to red eyespots with black pupils near the tails. There is no obvious difference between males and females.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>茴芹鳳蝶翼展約 52 至 80 公釐。翅膀以黃色為主，翅緣有寬黑色帶。重要的辨識特點：前翅前緣幾乎全黑，使這個物種的外觀比西方虎鳳蝶明顯更黑。後翅後緣有醒目的藍色斑點，尾部附近有黃橙至紅色眼斑，帶有黑色瞳孔。雌雄外觀相似，沒有明顯的差異。</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🗺️ Range & Habitat ／ 分布範圍與棲息地</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>Found throughout western North America from British Columbia south to Baja California and east to the Rocky Mountains. This species is extremely adaptable — found from sea level all the way to 14,000 feet elevation. In California, it is commonly seen in gardens, vacant lots, fields, roadsides, and urban areas wherever fennel grows. The open riparian areas of Whittier Narrows are perfect habitat.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>分布於北美西部，從英屬哥倫比亞向南至下加利福尼亞半島，向東至落磯山脈。這個物種的適應力極強——從海平面到海拔 4,400 公尺皆有分布。在加州，凡是有茴香生長的花園、空地、田野及路邊都能見到。惠提爾納洛斯的開闊河岸地帶是絕佳棲地。</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🌿 What They Eat ／ 食物來源</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English — Caterpillars</div>Caterpillars feed on plants in the carrot family (Apiaceae). In California coastal areas, they primarily feed on <strong>sweet fennel (anise)</strong> and poison hemlock — both introduced European weeds. At higher elevations they use native plants like lomatium and other native parsleys. When threatened, the caterpillar can extend a foul-smelling orange forked organ called the <em>osmeterium</em> from behind its head — it mimics a snake's tongue and smells terrible to predators!</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文 — 毛毛蟲</div>毛毛蟲以傘形科（Apiaceae）植物為食。在加州沿海地區，主要以<strong>甜茴香（茴芹）</strong>及毒芹為食——兩者都是引進的歐洲雜草。在較高海拔地區，則以本土鐔芹等原生植物為食。受到威脅時，毛毛蟲可以從頭部後方伸出散發惡臭的橙色分叉「臭角（osmeterium）」——模仿蛇的舌頭，令天敵退縮！</div>
+    </div>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English — Adults</div>Adult Anise Swallowtails feed on nectar from a wide variety of flowers. They are particularly fond of thistles, milkweed, and various native wildflowers. They are important pollinators in both natural and urban landscapes throughout California.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文 — 成蝶</div>成蝶以各種植物的花蜜為食，尤其喜愛薊花、馬利筋及各種本土野花。在自然與城市環境中都是重要的授粉者。</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🔄 Life Cycle & Lifespan ／ 生命週期與壽命</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>Complete metamorphosis; egg to adult in 30–60 days.
+        <ul>
+          <li><strong>Eggs:</strong> Small, round, yellow, laid singly on host plant leaves or stems.</li>
+          <li><strong>Caterpillars:</strong> Young caterpillars start black and white, mimicking bird droppings for camouflage. As they grow through multiple molts, they become bright green with black bands and orange/yellow spots — striking and beautiful. When alarmed, they extend the orange osmeterium, which releases a foul butyric acid smell.</li>
+          <li><strong>Chrysalis:</strong> Looks remarkably like a small thick branch — brown or green, held firmly to the plant by silk. In northern areas, the chrysalis overwinters.</li>
+          <li><strong>Adults:</strong> In Southern California, several generations fly from late February through October.</li>
+        </ul>
+      </div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>完全變態，卵到成蝶約 30 至 60 天。
+        <ul>
+          <li><strong>卵：</strong>小而圓、黃色，單粒產於寄主植物的葉片或莖上。</li>
+          <li><strong>幼蟲：</strong>初期為黑白色，擬態鳥糞保護自己。隨著多次蛻皮成長，變為鮮綠色帶黑色條紋及橙黃色斑點——令人印象深刻。受到驚嚇時，會伸出橙色臭角，釋放出一種類似腐敗奶油的惡臭。</li>
+          <li><strong>蛹：</strong>外觀酷似一截小樹枝——褐色或綠色，以絲線牢固地固定在植物上。北部地區的蛹以蛹態越冬。</li>
+          <li><strong>成蝶：</strong>在南加州，從二月下旬至十月有數個世代。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section"><h2>💛 Mating Behavior ／ 求偶與交配行為</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>Males practice "hilltopping" — flying to the tops of bare hills or prominent high points to establish territories and wait for females. Both sexes use chemical pheromones detected through receptors on their legs, feet, and antennae to find suitable mates. After mating, females lay eggs singly on host plant leaves, and the cycle begins again.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>雄蝶有「登頂（hilltopping）」行為——飛到光禿的山丘頂或高點建立領域等候雌蝶。雌雄均透過腳、足及觸角上的化學感受器偵測費洛蒙尋找配偶。交配後，雌蝶將卵一粒粒產在寄主植物葉片上，生命的循環再次展開。</div>
+    </div>
+  </div>
+
+  <div class="funfact"><div class="emoji">🌿</div><strong>Fun Fact for Visitors ／ 給訪客的趣味小知識</strong><hr>
+    <p><em>"If you have fennel growing in your yard, you likely have Anise Swallowtail caterpillars! Check the stems and leaves — they start looking like bird droppings, then transform into spectacular green caterpillars with orange spots."</em></p>
+    <p>「如果您的院子裡種有茴香，很可能就有茴芹鳳蝶的毛毛蟲！仔細看莖幹和葉片——牠們起初看起來像鳥糞，然後蛻變為令人驚嘆的帶橙色斑點的綠色毛毛蟲。」</p>
+  </div>
+  <div class="qr-section"><h2>📱 Scan to See More Photos ／ 掃描查看更多照片</h2>
+    <div class="qr-grid">
+      <div class="qr-item"><div class="qr-box" id="q-ans1"></div><p><strong>Adult Butterfly 成蝶</strong></p></div>
+      <div class="qr-item"><div class="qr-box" id="q-ans2"></div><p><strong>Caterpillar 毛毛蟲</strong></p></div>
+      <div class="qr-item"><div class="qr-box" id="q-ans3"></div><p><strong>Fennel Host Plant 茴香寄主植物</strong></p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ WESTERN GIANT SWALLOWTAIL ══════════════ -->
+<div class="guide t-wgs" id="g-wgs">
+  <div class="guide-header">
+    <h1>🦋 Western Giant Swallowtail ／ 西方巨鳳蝶</h1>
+    <p><em>Papilio rumiko</em> — Bilingual Docent Guide 中英對照導覽手冊</p>
+  </div>
+  <div class="intro-box">👑 <strong>North America's Largest Butterfly 北美最大蝴蝶：</strong> The Western Giant Swallowtail is one of the largest butterflies in North America, with a wingspan up to 6.25 inches! It was only recognized as a separate species from the Eastern Giant Swallowtail in 2014 based on DNA evidence. It is commonly seen in Southern California gardens — especially near citrus trees.<br><br>西方巨鳳蝶是北美洲最大的蝴蝶之一，翼展可達約 16 公分！直到 2014 年才根據 DNA 證據從東方巨鳳蝶中獨立出來成為單獨物種。在南加州的庭院中常見——尤其是在柑橘樹附近。</div>
+
+  <div class="section"><h2>🎨 Appearance ／ 外觀特徵</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>The Western Giant Swallowtail is truly enormous — wingspan 4 to 6.25 inches (10–16 cm), making it immediately recognizable in flight. Its wings are dark brown to black with two bold yellow bands: one horizontal across the forewing and one diagonal across the hindwing, forming a large yellow "X" pattern. The underside of the wings is predominantly yellow with black accents — quite different from the dark upper surface. The hindwings have characteristic swallowtail tails. The Western Giant is slightly smaller with paler yellow than its Eastern cousin.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>西方巨鳳蝶真的非常巨大——翼展 10 至 16 公分，飛行時一眼就能辨認。翅膀為深棕至黑色，帶有兩條醒目的黃色帶：前翅一條橫帶，後翅一條斜帶——形成大型黃色「X」圖案。翅膀背面以黃色為主帶有黑色裝飾——與深色的正面形成鮮明對比。後翅有典型的鳳蝶尾突。西方種比東方種略小，黃色較淡。</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🗺️ Range & Habitat ／ 分布範圍與棲息地</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>Found from California east to Texas, south through Mexico to Panama. In California it is common in the southern part of the state, particularly in the Los Angeles area. This butterfly favors open woodlands and woodland edges close to the ground, and is especially attracted to gardens with citrus trees. Neighborhoods around Whittier Narrows with citrus trees are excellent places to spot it!</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>分布從加州向東至德克薩斯州，向南穿越墨西哥至巴拿馬。在加州主要見於南部地區，尤其是洛杉磯一帶。這種蝴蝶偏好靠近地面的開闊林地及林緣地帶，對柑橘樹特別有吸引力。惠提爾納洛斯周邊種有柑橘樹的住宅區是發現牠的絕佳地點！</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🌿 What They Eat ／ 食物來源</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English — Caterpillars ("Orange Dogs")</div>Caterpillars feed on plants in the rue family (Rutaceae) — primarily <strong>citrus trees</strong> such as orange, lemon, lime, and grapefruit. The caterpillar is nicknamed the <strong>"orange dog"</strong> because of its habit of feeding on citrus. It is one of the most convincing bird-dropping mimics in the insect world — large, brown, cream, and white with a saddle-shaped pattern that makes it almost indistinguishable from real bird droppings. Even large caterpillars 2 inches long use this camouflage successfully!</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文 — 毛毛蟲（「橙狗」）</div>毛毛蟲以芸香科（Rutaceae）植物為食——主要是<strong>柑橘類果樹</strong>，如橙、檸檬、萊姆及葡萄柚。毛毛蟲被暱稱為<strong>「橙狗（orange dog）」</strong>，因為牠喜歡在柑橘樹上取食。牠是昆蟲世界中最逼真的鳥糞擬態者之一——棕色、乳白色帶馬鞍形圖案，幾乎與真正的鳥糞無法區分！即使已長達 5 公分的大毛毛蟲也能靠這招欺騙天敵！</div>
+    </div>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English — Adults</div>Adults feed on flower nectar from milkweed, lantana, butterfly bush, zinnias, and many others. They are strong, fast fliers and continuously beat their wings while nectaring at flowers — making photography a real challenge!</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文 — 成蝶</div>成蝶以馬利筋、馬纓丹、醉魚草、百日草等花蜜為食。飛行能力強，速度快，吸蜜時翅膀持續拍動——給攝影帶來不小的挑戰！</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🔄 Life Cycle & Lifespan ／ 生命週期與壽命</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>Complete metamorphosis.
+        <ul>
+          <li><strong>Eggs:</strong> Small, spherical, yellowish-orange, laid singly on citrus leaves and young shoots.</li>
+          <li><strong>Caterpillars:</strong> The famous "orange dog" — brown and cream with a saddle-shaped white patch, perfectly imitating bird droppings at every stage of growth. When alarmed, they extend a red-orange osmeterium that smells strongly of citrus and chemicals to deter predators.</li>
+          <li><strong>Chrysalis:</strong> Formed directly on a stem or vertical surface, brown with subtle markings blending into bark.</li>
+          <li><strong>Adults:</strong> 2 broods per year in California, flying May through September. In warm years, adults can be seen in Southern California gardens nearly year-round.</li>
+        </ul>
+      </div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>完全變態。
+        <ul>
+          <li><strong>卵：</strong>小而球形，黃橙色，單粒產於柑橘葉上及嫩芽處。</li>
+          <li><strong>幼蟲：</strong>著名的「橙狗」——棕色和乳白色帶馬鞍形白斑，在每個成長階段都完美擬態鳥糞。受到驚嚇時，會伸出橘紅色的臭角，散發強烈的柑橘及化學物質氣味嚇退天敵。</li>
+          <li><strong>蛹：</strong>直接形成於莖幹或垂直面上，褐色帶細膩花紋，與樹皮融為一體。</li>
+          <li><strong>成蝶：</strong>加州每年 2 個世代，五月至九月飛行。在溫暖年份，南加州花園幾乎全年可見成蝶。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section"><h2>💛 Mating Behavior ／ 求偶與交配行為</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>Males perform elaborate courtship flights around females, swooping and fluttering to display agility and strength. Females may mate multiple times throughout their lifespan, which increases genetic diversity among offspring. After mating, females seek out citrus trees or other rue-family plants to lay their eggs — a single female may lay eggs on several different trees.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>雄蝶在雌蝶周圍進行精心的求偶飛行，俯衝和拍翅以展示敏捷性與力量。雌蝶可能在一生中多次交配，增加後代的遺傳多樣性。交配後，雌蝶尋找柑橘樹或其他芸香科植物產卵——單隻雌蝶可能在多棵不同的樹上產卵。</div>
+    </div>
+  </div>
+
+  <div class="funfact"><div class="emoji">🍊</div><strong>Fun Fact for Visitors ／ 給訪客的趣味小知識</strong><hr>
+    <p><em>"The caterpillar looks EXACTLY like bird poop — not just a little bit, but convincingly so at every stage of its growth, even when it's 2 inches long. It's one of nature's greatest disguises!"</em></p>
+    <p>「這種毛毛蟲看起來<strong>完全</strong>像鳥糞——不只是有一點像，而是在每個成長階段都令人信服，即使已長達 5 公分！這是大自然最精彩的偽裝之一！」</p>
+  </div>
+  <div class="qr-section"><h2>📱 Scan to See More Photos ／ 掃描查看更多照片</h2>
+    <div class="qr-grid">
+      <div class="qr-item"><div class="qr-box" id="q-wgs1"></div><p><strong>Adult Butterfly 成蝶</strong></p></div>
+      <div class="qr-item"><div class="qr-box" id="q-wgs2"></div><p><strong>Orange Dog Caterpillar 橙狗毛毛蟲</strong></p></div>
+      <div class="qr-item"><div class="qr-box" id="q-wgs3"></div><p><strong>Size Comparison 體型對比</strong></p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ CALIFORNIA DOGFACE ══════════════ -->
+<div class="guide t-dog" id="g-dog">
+  <div class="guide-header">
+    <h1>🦋 California Dogface Butterfly ／ 加州狗臉蝶</h1>
+    <p><em>Zerene eurydice</em> — Bilingual Docent Guide 中英對照導覽手冊</p>
+  </div>
+  <div class="intro-box">⭐ <strong>California's Official State Insect 加州州蟲：</strong> The California Dogface Butterfly holds a very special distinction — it is California's official <strong>State Insect</strong>, designated in 1972, making California the <em>first state in the nation</em> to adopt an official state insect! It is <strong>found nowhere else on Earth</strong> except California and a small part of Baja California — making it a true symbol of California's unique natural heritage.<br><br>加州狗臉蝶擁有一個非常特殊的頭銜——牠是加州的官方<strong>州蟲（State Insect）</strong>，於1972年正式指定，使加州成為全美<em>第一個</em>設立州蟲的州！除了加州及下加利福尼亞半島的一小部分外，<strong>地球上任何其他地方都找不到牠</strong>。</div>
+
+  <div class="section"><h2>🐩 Appearance — The "Poodle Face" ／ 外觀特徵——「貴賓狗的臉」</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>The California Dogface has a wingspan of about 2 to 2½ inches (5.1–6.3 cm). The name comes from the striking pattern on the <strong>male's wings</strong>: the black border on the forewing outlines a shape that looks remarkably like a <strong>poodle's head</strong> — you can make out the ears, eye (a black dot), and nose in the yellow-orange wing. The male also has an iridescent, almost metallic sheen on the forewings that shimmers in sunlight — caused by light-reflecting structures in the wing scales. The <strong>female</strong> is much plainer — mostly pale yellow or cream-colored with just one or two small black spots on the forewing. She lacks the dramatic poodle pattern entirely.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>加州狗臉蝶翼展約 5.1 至 6.3 公分。「狗臉蝶」的名稱來自<strong>雄蝶翅膀</strong>上的獨特圖案：前翅的黑色邊框圍出了一個酷似<strong>貴賓狗頭部</strong>的輪廓——您可以在橙黃色的翅膀上辨認出狗耳、眼睛（一個黑點）和鼻子。雄蝶前翅還有一種彩虹般的金屬光澤，在陽光下閃閃發光——這是由翅鱗中的反光幾丁質結構所產生的。<strong>雌蝶</strong>的外觀則樸素許多，主體為淡黃色或乳白色，前翅僅有一至兩個小黑點，完全沒有雄蝶那般戲劇性的貴賓狗圖案。</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🗺️ Range & Habitat ／ 分布範圍與棲息地</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>The California Dogface is <strong>endemic to California</strong> — meaning it exists nowhere else in the world except California and the very northern tip of Baja California. Its range runs from north-central California southward, between the Sierra Nevada and the Coast Ranges. It is most commonly found in the <strong>Santa Ana Mountains and San Bernardino Mountains</strong> in Southern California — right in our backyard! Its preferred habitats are foothills, chaparral, and oak or coniferous woodlands — especially near riparian areas where its host plant, False Indigo, grows. Despite being the state insect, it is considered <strong>rare and local</strong> — most Californians have never seen one in the wild!</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>加州狗臉蝶是<strong>加州特有種</strong>——除了加州及下加利福尼亞半島最北端，全球任何地方都找不到牠。分布範圍從加州中北部向南延伸，位於內華達山脈與海岸山脈之間。在南加州，最常見於<strong>聖塔安那山脈（Santa Ana Mountains）與聖貝納迪諾山脈（San Bernardino Mountains）</strong>——正好就在我們附近！牠偏好的棲地為丘陵地、灌木叢林（chaparral）及橡樹林或針葉林，尤其是靠近溪流的河岸地帶，因為那裡生長著牠賴以為生的假靛藍（False Indigo）。雖貴為加州州蟲，牠卻被認為是<strong>稀少且分布局限</strong>的物種——大多數加州人從未在野外親眼見過牠！</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🌿 What They Eat ／ 食物來源</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English — Caterpillars</div>The caterpillar feeds <em>exclusively</em> on one plant: <strong>California False Indigo (<em>Amorpha californica</em>)</strong>. This is the only known host plant, making this butterfly's survival completely dependent on the health of this single shrub species. The caterpillar is bright green with pale horizontal stripes — perfectly camouflaged against the leaves of the False Indigo. The eggs also start green or yellow-green, then turn a vivid crimson as they mature — a remarkable detail to share with visitors!</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文 — 毛毛蟲</div>毛毛蟲<em>只吃</em>一種植物：<strong>加州假靛藍（<em>Amorpha californica</em>）</strong>。這是目前已知唯一的寄主植物，意味著這種蝴蝶的生存完全取決於這一種灌木的健康狀況。毛毛蟲為鮮綠色，帶有淺色橫紋，與假靛藍的葉片完美融合。卵初為綠色或黃綠色，隨著成熟逐漸轉為深紅色——這是可以與訪客分享的另一個精彩細節！</div>
+    </div>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English — Adults</div>Adult Dogface butterflies feed on flower nectar, showing a strong preference for <strong>purple flowers</strong>. Favorite nectar plants include thistles, tall blue verbena, and California buckeye. Their fast flight — typically 10 to 20 feet above the ground — makes them very hard to observe. Your best chance to spot one is when it pauses to feed at a flower!</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文 — 成蝶</div>成蝶以花蜜為食，對<strong>紫色花朵</strong>情有獨鍾。最喜愛的蜜源植物包括薊花、高大藍馬鞭草（tall blue verbena）及加州七葉樹等。由於飛行速度極快，平時飛翔於離地 3 至 6 公尺的高空，最佳的觀察機會是在牠停在花朵上吸食花蜜的時候！</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🔄 Life Cycle & Lifespan ／ 生命週期與壽命</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>Complete metamorphosis. Two broods per year:
+        <ul>
+          <li><strong>Eggs:</strong> Laid one at a time on False Indigo leaves. Start pale green or yellow, then turn a striking crimson color as they develop.</li>
+          <li><strong>Caterpillars:</strong> Bright greenish-yellow with white lateral bands edged in red — matching the color of their host plant for camouflage. Pass through several instars before pupating.</li>
+          <li><strong>Chrysalis:</strong> Bright green, blending in with the False Indigo foliage. Takes approximately one week to complete metamorphosis in summer.</li>
+          <li><strong>First brood:</strong> Flies April to July, peaking in June. Adult lifespan: about 3 to 4 months.</li>
+          <li><strong>Second brood:</strong> Flies August to October. Lifespan: 6–8 months — these adults <strong>overwinter in a hibernation-like state</strong> and emerge in early spring to mate.</li>
+        </ul>
+      </div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>完全變態。每年兩個世代：
+        <ul>
+          <li><strong>卵：</strong>一粒粒產在假靛藍的葉片上。初為淡綠色或黃色，隨後轉變為醒目的深紅色。</li>
+          <li><strong>幼蟲：</strong>鮮豔的黃綠色，側面有白色縱帶，邊緣鑲有紅色——與假靛藍葉片顏色相近，提供保護色。經歷數次蛻皮後化蛹。</li>
+          <li><strong>蛹：</strong>鮮綠色，與假靛藍的葉叢融為一體。夏季的蛹約需一週完成蛻變。</li>
+          <li><strong>第一代：</strong>飛行期為四月至七月，六月達到高峰。成蝶壽命約 3 至 4 個月。</li>
+          <li><strong>第二代：</strong>飛行期為八月至十月。壽命 6–8 個月——牠們會以<strong>類似冬眠的狀態越冬</strong>，翌年早春再度出現，交配後展開新的生命循環。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="funfact"><div class="emoji">🐩</div><strong>Fun Fact for Visitors ／ 給訪客的趣味小知識</strong><hr>
+    <p><em>"Can you see the poodle? Look closely at the male's forewing — the black border outlines ears, an eye, and a nose. Once you see it, you can never unsee it! That's exactly how this butterfly got its name."</em></p>
+    <p>「您看得出貴賓狗的臉嗎？仔細看雄蝶的前翅——黑色邊框勾勒出耳朵、眼睛和鼻子的輪廓。一旦看出來，就再也忘不掉了！這正是這種蝴蝶名字的由來。」</p>
+  </div>
+  <div class="qr-section"><h2>📱 Scan to See More Photos ／ 掃描查看更多照片</h2>
+    <div class="qr-grid">
+      <div class="qr-item"><div class="qr-box" id="q-dog1"></div><p><strong>Male Butterfly 雄蝶</strong></p></div>
+      <div class="qr-item"><div class="qr-box" id="q-dog2"></div><p><strong>Female Butterfly 雌蝶</strong></p></div>
+      <div class="qr-item"><div class="qr-box" id="q-dog3"></div><p><strong>False Indigo Host Plant 假靛藍</strong></p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ RED ADMIRAL ══════════════ -->
+<div class="guide t-ra" id="g-ra">
+  <div class="guide-header">
+    <h1>🦋 Red Admiral Butterfly ／ 紅蛺蝶</h1>
+    <p><em>Vanessa atalanta</em> — Bilingual Docent Guide 中英對照導覽手冊</p>
+  </div>
+
+  <div class="section"><h2>🎨 Appearance ／ 外觀特徵</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>The Red Admiral is a medium-sized butterfly with a wingspan of 1¾ to 3 inches (4.5–7.6 cm). Its wings are striking black with bold orange-red diagonal bands across the forewings and along the outer edge of the hindwings. The forewings also display a cluster of white spots near the tips. The underside of the wings is beautifully mottled in brown, black, and blue — excellent camouflage when the wings are closed.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>紅蛺蝶是中型蝴蝶，翼展約 4.5 至 7.6 公分。翅膀底色為黑色，前翅上有醒目的橙紅色斜帶，後翅外緣也有橙紅色條紋，前翅尖端還有一簇白色斑點。翅膀合攏時，翅膀內側呈現棕色、黑色與藍色交錯的花紋，是絕佳的保護色。</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🗺️ Range & Habitat ／ 分布範圍與棲息地</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>The Red Admiral is one of the most widely distributed butterflies in the world, found across North and Central America, Europe, North Africa, and Asia. In North America, its range extends from Guatemala north through Mexico and the United States all the way to northern Canada, and also includes Hawaii and some Caribbean islands. It thrives in moist woods, parks, yards, marshes, and moist fields. Here in the Los Angeles area, Whittier Narrows — with its moist riparian habitat — is a perfect spot to find them!</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>紅蛺蝶是世界上分布最廣的蝴蝶之一，遍布北美洲、中美洲、歐洲、北非及亞洲。在北美洲，分布範圍從瓜地馬拉向北經過墨西哥、美國一直延伸到加拿大北部，夏威夷與加勒比海部分島嶼也有其蹤跡。牠們偏好潮濕的林地、公園、庭院、沼澤及濕潤的草地。惠提爾納洛斯潮濕的河岸環境，正是欣賞紅蛺蝶的絕佳地點！</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🌿 What They Eat ／ 食物來源</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English — Caterpillars</div>Caterpillars feed exclusively on plants in the nettle family (Urticaceae). This includes stinging nettle, wood nettle, false nettle, and pellitory. In California, Common Nettle (<em>Urtica dioica</em>) and Pennsylvania Pellitory are the confirmed host plants. The Red Admiral's ability to use over 50 nettle-family plant species worldwide is one reason it is so widespread and adaptable.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文 — 毛毛蟲</div>毛毛蟲專門以蕁麻科（Urticaceae）植物為食，包括刺蕁麻、木蕁麻、假蕁麻及牆草等。在加州，確認的寄主植物為普通蕁麻（<em>Urtica dioica</em>）與賓州牆草。紅蛺蝶能利用全球超過五十種蕁麻科植物，這正是牠能廣泛分布、適應力極強的原因之一。</div>
+    </div>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English — Adults</div>Adult Red Admirals have surprisingly diverse tastes! They actually <em>prefer</em> tree sap flows, fermenting fruit, and even bird droppings over flower nectar. When those aren't available, they visit flowers such as red clover, aster, and butterfly bush. Like many butterflies, they also "wick" from mud puddles to absorb minerals and electrolytes.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文 — 成蝶</div>成蝶的口味出乎意料地多元！牠們其實<em>偏好</em>樹木滲出的汁液、發酵腐爛的水果，甚至是鳥糞，花蜜反而是次要選擇。當這些食物來源不足時，牠們才會訪花，包括紅花苜蓿、紫苑花及醉魚草等。牠們也會在泥水窪旁「吸水」，攝取礦物質與電解質。</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🔄 Life Cycle & Lifespan ／ 生命週期與壽命</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>The Red Admiral undergoes <strong>complete metamorphosis</strong>: egg → caterpillar → chrysalis → adult.
+        <ul>
+          <li><strong>Eggs:</strong> Females lay eggs singly on the tops of host plant leaves. Eggs are green to cream in color and covered in tiny hair-like structures that help them blend in with nettle leaves.</li>
+          <li><strong>Caterpillars:</strong> Larvae grow to about 1¼ inches (3.5 cm). They are typically black with white spots and spines. Young caterpillars fold leaves into shelters to hide; older caterpillars build nests of leaves tied together with silk.</li>
+          <li><strong>Chrysalis:</strong> The hanging chrysalis brilliantly mimics a dry, dead leaf in both color and texture.</li>
+          <li><strong>Adults:</strong> Adults can hibernate through winter and re-emerge in spring with a lifespan that can extend several months when overwintering.</li>
+          <li><strong>Broods:</strong> In California: 2–3 broods per year, with flight season from March through November.</li>
+        </ul>
+      </div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>紅蛺蝶經歷<strong>完全變態</strong>：卵 → 幼蟲 → 蛹 → 成蝶。
+        <ul>
+          <li><strong>卵：</strong>雌蝶將卵一粒粒產在寄主植物葉片的正面。卵呈綠色至乳白色，表面覆有細小的毛狀結構，有助於與蕁麻葉片融為一體。</li>
+          <li><strong>幼蟲：</strong>毛毛蟲體長可達約 3.5 公分，通常為黑色帶白色斑點與棘刺。幼齡毛毛蟲會將葉片折疊成「葉巢」躲藏其中；較大的毛毛蟲則用絲線將葉片綁在一起築巢。</li>
+          <li><strong>蛹：</strong>垂懸的蛹在顏色與質感上完美模仿一片乾枯的枯葉。</li>
+          <li><strong>成蝶：</strong>成蝶可以越冬休眠，春天再重新出現。越冬的個體壽命可長達數個月。</li>
+          <li><strong>世代數：</strong>在加州：每年 2 至 3 個世代，飛行季節從三月延續至十一月。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section"><h2>💛 Mating Behavior ／ 求偶與交配行為</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>Male Red Admirals are highly territorial. Each male claims an elliptical area roughly 4–13 meters wide and patrols its boundaries up to thirty times per hour! They perch on sunlit spots in the mid-afternoon, watching for females to fly past. Despite this aggression toward rivals, Red Admirals are famously people-friendly and will often land on humans, using them as a perch!</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>雄性紅蛺蝶具有強烈的領域性。每隻雄蝶會佔據一個橢圓形區域，寬約 4 至 13 公尺，每小時巡邏邊界多達三十次！牠們在午後停棲在陽光照射的地點，守候雌蝶飛過。然而，儘管對同類很具攻擊性，紅蛺蝶對人類卻出奇地友善，經常主動停在人身上休息！</div>
+    </div>
+  </div>
+
+  <div class="funfact"><div class="emoji">🌸</div><strong>Fun Fact for Visitors ／ 給訪客的趣味小知識</strong><hr>
+    <p><em>"If a Red Admiral lands on you today — consider yourself lucky! This butterfly is famously people-friendly and is known to use humans as a resting perch. You've just become part of nature!"</em></p>
+    <p>「如果今天有一隻紅蛺蝶停在您身上，那您真的很幸運！紅蛺蝶以親近人類著稱，牠們喜歡把人當作休息的棲木。恭喜您，您剛剛成為大自然的一部分了！」</p>
+  </div>
+  <div class="qr-section"><h2>📱 Scan to See More Photos ／ 掃描查看更多照片</h2>
+    <div class="qr-grid">
+      <div class="qr-item"><div class="qr-box" id="q-ra1"></div><p><strong>Adult Butterfly 成蝶</strong></p></div>
+      <div class="qr-item"><div class="qr-box" id="q-ra2"></div><p><strong>Caterpillar 毛毛蟲</strong></p></div>
+      <div class="qr-item"><div class="qr-box" id="q-ra3"></div><p><strong>Chrysalis 蛹</strong></p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ MONARCH ══════════════ -->
+<div class="guide t-mon" id="g-mon">
+  <div class="guide-header">
+    <h1>🦋 Monarch Butterfly ／ 帝王蝶</h1>
+    <p><em>Danaus plexippus</em> — Bilingual Docent Guide 中英對照導覽手冊</p>
+  </div>
+  <div class="alert-box">⚠️ <strong>Conservation Alert 保育警訊：</strong> In December 2024, the U.S. Fish & Wildlife Service proposed listing the Monarch as a <strong>threatened species</strong> under the Endangered Species Act. Western populations have declined over 90% since the 1980s. This butterfly needs our help!<br><br>2024年12月，美國魚類及野生動物管理局提議將帝王蝶列為《瀕危物種法》下的<strong>「受威脅物種」</strong>。西部族群自1980年代以來已減少逾90%。這種美麗的蝴蝶，迫切需要我們的關注與保護！</div>
+
+  <div class="section"><h2>🎨 Appearance ／ 外觀特徵</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>The Monarch is one of North America's most recognizable butterflies. Its wingspan averages 3.5 to 4 inches (90–100 mm), making it a large and conspicuous species. The wings are a bold, bright orange with black borders and black veins, accented by two rows of white spots along the outer edges. Males and females look similar, but males have a small black scent patch on each hind wing, while females have thicker black veining. On average, an adult Monarch weighs less than half a gram — lighter than a paperclip!</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>帝王蝶是北美洲辨識度最高的蝴蝶之一，翼展平均約 90 至 100 公釐，是體型醒目的大型蝶種。翅膀呈鮮豔的橙色，帶有黑色邊框與黑色翅脈，翅緣還有兩排白色斑點。雌雄外觀相似，但雄蝶後翅各有一個小型黑色氣味腺斑；雌蝶的翅脈則較雄蝶粗黑。一隻成蝶的體重平均不到半公克——比一枚迴紋針還輕！</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🗺️ Range & Habitat ／ 分布範圍與棲息地</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>Monarchs are native to North and South America but have spread worldwide to Australia, New Zealand, Hawaii, and parts of Europe. In North America, there are two major migratory populations: the <strong>Eastern population</strong> (east of the Rockies), which overwinters in the oyamel fir forests of central Mexico, and the <strong>Western population</strong> (west of the Rockies), which overwinters along the California coast — including famous sites like Pacific Grove and Pismo Beach. Breeding habitat requires the presence of milkweed plants. In western North America, milkweed and nectar resources are often found in riparian corridors — exactly the kind of habitat found at Whittier Narrows!</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>帝王蝶原產於南北美洲，後來也擴散至澳洲、紐西蘭、夏威夷及歐洲部分地區。在北美洲，主要有兩大遷徙族群：<strong>東部族群</strong>（落磯山脈以東）越冬於墨西哥中部的冷杉林；<strong>西部族群</strong>（落磯山脈以西）越冬於加州沿岸，包括太平洋叢林市（Pacific Grove）及皮斯莫海灘（Pismo Beach）等著名越冬地。繁殖棲地必須有馬利筋（乳草）植物存在。在北美西部，馬利筋和蜜源植物常見於河岸廊道——這正是惠提爾納洛斯的典型棲息環境！</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🌿 What They Eat ／ 食物來源</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English — Caterpillars</div>Monarch caterpillars feed <em>exclusively</em> on milkweed plants (genus <em>Asclepias</em>). Milkweed contains toxic cardiac glycosides, which the caterpillars store in their bodies. This makes both the caterpillar and the adult butterfly poisonous and distasteful to predators such as birds, frogs, and lizards. The bold orange-and-black coloring of the adult is a warning signal to predators: "Do not eat me!"</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文 — 毛毛蟲</div>帝王蝶的毛毛蟲<em>只吃</em>馬利筋屬（<em>Asclepias</em>）植物。馬利筋含有毒性強烈的強心配糖體，毛毛蟲攝食後將毒素儲存在體內，使毛毛蟲與成蝶都對鳥類、青蛙、蜥蜴等天敵有毒且難以下嚥。成蝶鮮豔的橙黑色正是對天敵發出的警告信號：「我有毒，請勿靠近！」</div>
+    </div>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English — Adults</div>Adult Monarchs feed on nectar from a wide variety of flowers, especially native wildflowers such as goldenrod, aster, coneflower, and lantana. Nectar not only fuels their daily activity but also provides the fat reserves they need for their extraordinary long-distance migration and to survive overwintering.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文 — 成蝶</div>成蝶以各種花卉的花蜜為食，尤其喜愛本土野花如一枝黃花、紫苑、松果菊及馬纓丹等。花蜜不僅提供日常活動所需的能量，更讓牠們儲積足夠的脂肪，以備漫長的遷徙旅途及越冬之用。</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🔄 Life Cycle & Lifespan ／ 生命週期與壽命</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>Monarchs undergo <strong>complete metamorphosis</strong>: egg → caterpillar → chrysalis → adult. The full cycle from egg to adult takes about 4 to 5 weeks.
+        <ul>
+          <li><strong>Eggs:</strong> Females lay eggs singly on milkweed leaves. Eggs hatch in 3 to 5 days.</li>
+          <li><strong>Caterpillars:</strong> The caterpillar feeds on milkweed for about 2 weeks, growing through 5 molts. Its bold yellow, black, and white stripes warn predators of its toxicity.</li>
+          <li><strong>Chrysalis:</strong> The caterpillar forms a beautiful jade-green chrysalis with gold dots, spending 10 to 12 days transforming inside. As it nears emergence, the chrysalis becomes transparent, revealing the orange wings within.</li>
+          <li><strong>Adults — Summer generations:</strong> Most adult Monarchs live only 2 to 5 weeks and focus on reproduction.</li>
+          <li><strong>Adults — Migratory generation:</strong> The final generation of the year enters a special state called <em>diapause</em> — they stop reproducing and prepare for migration. This "super generation" can live <strong>6 to 8 months</strong>, surviving the entire migration and overwintering period before mating in the spring.</li>
+        </ul>
+      </div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>帝王蝶經歷<strong>完全變態</strong>：卵 → 幼蟲 → 蛹 → 成蝶。從卵到成蝶約需 4 至 5 週。
+        <ul>
+          <li><strong>卵：</strong>雌蝶將卵一粒粒產在馬利筋葉片上，3 至 5 天後孵化。</li>
+          <li><strong>幼蟲：</strong>毛毛蟲以馬利筋為食約兩週，經歷五次蛻皮成長。鮮豔的黃、黑、白相間條紋是對天敵的警示色。</li>
+          <li><strong>蛹：</strong>毛毛蟲化為美麗的翠綠色蛹，上有金色斑點，在蛹內蛻變約需 10 至 12 天。接近羽化時，蛹殼逐漸透明，可隱約看見其中橙色的翅膀。</li>
+          <li><strong>成蝶（夏季世代）：</strong>大多數成蝶壽命僅 2 至 5 週，主要任務是繁殖後代。</li>
+          <li><strong>成蝶（遷徙世代）：</strong>每年最後一個世代進入特殊的「滯育（diapause）」狀態——停止繁殖，全力準備遷徙。這一代「超級蝴蝶」壽命長達 <strong>6 至 8 個月</strong>，完成全程遷徙與越冬後，才在春天交配繁殖。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section"><h2>✈️ The Great Migration ／ 偉大的遷徙</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>The Monarch's annual migration is one of the most spectacular natural phenomena in the world. Every autumn, millions of Monarchs begin their journey south. The eastern population travels up to 3,000 miles to the oyamel fir forests of central Mexico. The western population migrates to overwintering sites along the California coast. Monarchs can travel 50 to 100 miles per day, and the record for a single day is 265 miles! During migration, they use thermal air currents to glide and save energy, navigating with the sun as a compass combined with an internal biological clock. Remarkably, no single butterfly makes the full round trip — it takes <strong>3 to 4 generations</strong> to complete the northward journey in spring and summer, but the single migratory "super generation" makes the entire southward journey in autumn alone.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>帝王蝶每年的遷徙，是世界上最壯觀的自然奇景之一。每到秋天，數以百萬計的帝王蝶展開南遷之旅。東部族群飛行多達 4,800 公里，抵達墨西哥中部的冷杉林；西部族群則遷往加州沿岸的越冬地。帝王蝶每天可飛行 80 至 160 公里，最高紀錄一天飛行了 426 公里！遷徙時，牠們借助熱氣流滑翔以節省體力，並以太陽作為指南針、配合體內的生物時鐘來導航。最令人驚嘆的是：沒有任何一隻蝴蝶能完成完整的來回旅程——春夏北返需要 <strong>3 至 4 個世代</strong>接力完成，但秋季南下那段漫長的旅程，卻由單獨一代「超級世代」獨自完成。</div>
+    </div>
+  </div>
+
+  <div class="funfact"><div class="emoji">🌸</div><strong>Fun Fact for Visitors ／ 給訪客的趣味小知識</strong><hr>
+    <p><em>"The Monarch you see today has never been to Mexico — and yet it knows exactly how to get there. It navigates using the sun as a compass and an internal clock. No GPS needed — just millions of years of evolution!"</em></p>
+    <p>「您今天看到的這隻帝王蝶，從來沒有去過墨西哥——但牠卻清楚知道怎麼飛到那裡。牠以太陽為指南針，靠著體內的生物時鐘導航。不需要GPS——只需要數百萬年演化出來的本能！」</p>
+  </div>
+  <div class="qr-section"><h2>📱 Scan to See More Photos ／ 掃描查看更多照片</h2>
+    <div class="qr-grid">
+      <div class="qr-item"><div class="qr-box" id="q-mon1"></div><p><strong>Adult Butterfly 成蝶</strong></p></div>
+      <div class="qr-item"><div class="qr-box" id="q-mon2"></div><p><strong>Caterpillar 毛毛蟲</strong></p></div>
+      <div class="qr-item"><div class="qr-box" id="q-mon3"></div><p><strong>Migration 遷徙</strong></p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ MOURNING CLOAK ══════════════ -->
+<div class="guide t-mc" id="g-mc">
+  <div class="guide-header">
+    <h1>🦋 Mourning Cloak ／ 哀蛺蝶</h1>
+    <p><em>Nymphalis antiopa</em> — Bilingual Docent Guide 中英對照導覽手冊</p>
+  </div>
+  <div class="intro-box">⏳ <strong>Champion of Longevity 壽命冠軍：</strong> The Mourning Cloak holds a remarkable record — it is one of the <strong>longest-lived butterflies in North America</strong>, with adults surviving 10 to 11 months! It hibernates through winter and is often the <em>very first</em> butterfly to appear in spring, sometimes flying while snow is still on the ground.<br><br>哀蛺蝶保有一項驚人紀錄——牠是北美洲<strong>壽命最長的蝴蝶之一</strong>，成蝶可存活 10 至 11 個月！牠冬眠越冬，常常是春天<em>最早</em>出現的蝴蝶，有時在積雪尚未融化時就已經飛翔。</div>
+
+  <div class="section"><h2>🎨 Appearance ／ 外觀特徵</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>The Mourning Cloak has a wingspan of 2.25 to 4 inches (6–10 cm). It is one of the most distinctive butterflies — no other species looks quite like it. The upper wing surface is a rich velvety dark maroon or brown, with a row of iridescent blue spots lining the inner edge of a bold pale-yellow (cream) border. The wing edges are ragged and scalloped. The underside is dark gray-brown with bark-like gray striation — excellent camouflage when resting on a tree. There is no obvious difference between males and females.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>哀蛺蝶翼展 6 至 10 公分。外觀最獨特的蝴蝶之一——沒有其他物種長得像牠。翅膀正面為濃郁的絲絨深栗色或褐色，內緣有一排彩虹色藍色斑點，外緣有醒目的淡黃色（乳白色）邊框。翅緣呈鋸齒狀。翅膀背面為深灰褐色，帶有樹皮狀紋路——停棲在樹上時是絕佳保護色。雌雄外觀相似。</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🗺️ Range & Habitat ／ 分布範圍與棲息地</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>One of the most widely distributed butterflies in the Northern Hemisphere — found across all of North America south of the tundra to central Mexico, and across temperate Eurasia. Because they roam and migrate, they are found in almost any habitat where host plants occur: woods, parks, suburbs, and especially riparian areas. Whittier Narrows' willows and cottonwoods make it ideal Mourning Cloak habitat!</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>北半球分布最廣的蝴蝶之一——遍布整個北美洲（從凍原以南至墨西哥中部）及溫帶歐亞大陸。由於牠們到處漫遊和遷徙，幾乎任何有寄主植物的棲地都能發現：林地、公園、郊區，尤其是河岸地帶。惠提爾納洛斯的柳樹和棉白楊是哀蛺蝶的理想棲地！</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🌿 What They Eat ／ 食物來源</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English — Caterpillars</div>Caterpillars, also known as "Spiny Elm Caterpillars," feed on willows, cottonwoods, aspens, elms, and birches. Young caterpillars feed gregariously in large communal webs — sometimes so many that they can completely defoliate branches. They are black with white spots and rows of red-orange dots, with long black spines covering the body.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文 — 毛毛蟲</div>毛毛蟲又稱「刺榆毛蟲（Spiny Elm Caterpillar）」，以柳樹、棉白楊、白楊、榆樹及樺樹為食。幼齡毛毛蟲群體在大型絲質巢網中覓食——有時數量眾多，足以將樹枝完全吃禿。牠們為黑色帶白斑及橙紅色點，全身帶有長黑刺。</div>
+    </div>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English — Adults</div>Unusual among butterflies — Mourning Cloaks rarely visit flowers for nectar! They primarily feed on <strong>tree sap flows, rotting fruit, and fermenting fluids</strong>. They are often seen at tree wounds oozing sap. When flowers are the only available option, they will visit willows and other spring bloomers.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文 — 成蝶</div>在蝴蝶中較為特殊——哀蛺蝶很少訪花吸蜜！牠們主要以<strong>樹木滲出的汁液、腐爛水果及發酵液體</strong>為食，常見於樹木滲汁的傷口處。只有在沒有其他選擇時，牠們才會訪花。</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🔄 Life Cycle & Lifespan ／ 生命週期與壽命</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>Complete metamorphosis; total lifespan 10–11 months — one of the longest of any butterfly.
+        <ul>
+          <li><strong>Eggs:</strong> Females lay eggs in clusters, arranged in rings around twigs of host trees. Eggs hatch in 10 to 12 days.</li>
+          <li><strong>Caterpillars:</strong> Feed communally in webs for several weeks, then wander to find a pupation site.</li>
+          <li><strong>Chrysalis:</strong> Tan to gray in color, up to 28 mm long, with two head horns. Hangs upside down from stems.</li>
+          <li><strong>Adults:</strong> Emerge in summer → feed to build fat reserves → enter estivation (summer dormancy) → re-emerge in autumn → feed again → hibernate through winter → emerge in spring to mate and lay eggs.</li>
+          <li><strong>Broods:</strong> 1–2 broods per year in California.</li>
+        </ul>
+      </div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>完全變態；總壽命 10–11 個月——是所有蝴蝶中壽命最長之一。
+        <ul>
+          <li><strong>卵：</strong>雌蝶將卵成批產在寄主樹嫩枝上，排列成環狀圈。卵在 10 至 12 天孵化。</li>
+          <li><strong>幼蟲：</strong>在巢網中群體覓食數週，然後分散尋找化蛹地點。</li>
+          <li><strong>蛹：</strong>棕褐至灰色，長達 28 公釐，帶有兩個頭角。倒懸在莖桿上。</li>
+          <li><strong>成蝶：</strong>夏天羽化 → 覓食儲積脂肪 → 進入夏眠（夏季休眠）→ 秋天再度出現覓食 → 越冬冬眠 → 春天醒來交配產卵。</li>
+          <li><strong>世代數：</strong>加州每年 1 至 2 個世代。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section"><h2>💛 Mating Behavior ／ 求偶與交配行為</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>Males are territorial, defending sunny perches near ravines, wood margins, parks, and stream edges — sometimes territories over 300 square meters! They display polygynous behavior, mating with multiple females. Mating occurs in spring after hibernation. After mating, females lay eggs in large clusters in rings around twigs of host trees.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>雄蝶具領域性，守護峽谷、林緣、公園及溪流旁的陽光棲點——有時面積超過 300 平方公尺！牠們為多配偶制，與多隻雌蝶交配。交配在越冬後的春季進行。交配後，雌蝶將卵大量環狀產在寄主樹的嫩枝上。</div>
+    </div>
+  </div>
+
+  <div class="funfact"><div class="emoji">❄️</div><strong>Fun Fact for Visitors ／ 給訪客的趣味小知識</strong><hr>
+    <p><em>"The Mourning Cloak can live nearly a YEAR — almost unheard of for a butterfly! It survives both summer heat (estivation) AND winter cold (hibernation). It is often seen flying on warm winter days, sometimes before the snow has even melted!"</em></p>
+    <p>「哀蛺蝶可以活將近一年——這在蝴蝶中幾乎是前所未聞的！牠能度過夏天的酷熱（夏眠）也能熬過冬天的嚴寒（冬眠）。牠常在溫暖的冬日飛翔，有時積雪尚未融化就已現身！」</p>
+  </div>
+  <div class="qr-section"><h2>📱 Scan to See More Photos ／ 掃描查看更多照片</h2>
+    <div class="qr-grid">
+      <div class="qr-item"><div class="qr-box" id="q-mc1"></div><p><strong>Adult Butterfly 成蝶</strong></p></div>
+      <div class="qr-item"><div class="qr-box" id="q-mc2"></div><p><strong>Spiny Caterpillar 刺毛毛蟲</strong></p></div>
+      <div class="qr-item"><div class="qr-box" id="q-mc3"></div><p><strong>Bark Camouflage 樹皮保護色</strong></p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ PAINTED LADY ══════════════ -->
+<div class="guide t-pl" id="g-pl">
+  <div class="guide-header">
+    <h1>🦋 Painted Lady ／ 彩蛺蝶</h1>
+    <p><em>Vanessa cardui</em> — Bilingual Docent Guide 中英對照導覽手冊</p>
+  </div>
+  <div class="intro-box">🌍 <strong>World Traveler 世界旅行家：</strong> The Painted Lady is found on <strong>every continent except Antarctica</strong> — making it the most widely distributed butterfly in the world! In 2024, scientists confirmed that Painted Ladies crossed the Atlantic Ocean — a journey of over 4,000 miles — making it the first insect ever recorded crossing an ocean.<br><br>彩蛺蝶遍布<strong>除南極洲外的每一個大洲</strong>——是世界上分布最廣的蝴蝶！2024年，科學家確認彩蛺蝶曾橫越大西洋——飛行超過 6,400 公里——成為有記錄以來第一種跨越海洋的昆蟲。</div>
+
+  <div class="section"><h2>🎨 Appearance ／ 外觀特徵</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>The Painted Lady has a wingspan of 2 to 3 inches (50–76 mm). Its wings are a beautiful mosaic of orange, black, and white. The forewing tips are black with white splotches. The hindwing has four eyespots visible on the underside — a mottled pattern of gray, brown, and black with pink highlights. The overall effect is like a painting — hence the name "Painted Lady." There is no obvious difference between males and females.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>彩蛺蝶翼展約 50 至 76 公釐。翅膀呈橙色、黑色與白色的美麗馬賽克圖案。前翅尖端黑色帶白色斑塊。後翅背面有四個眼斑——呈灰、棕、黑色交錯帶粉紅色的美麗花紋。整體效果如同一幅彩畫——因而得名「彩蛺蝶（Painted Lady）」。雌雄外觀相似。</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🗺️ Range & Habitat ／ 分布範圍與棲息地</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>Found on every continent except Antarctica. In North America, the entire population winters near the US-Mexico border and in the desert Southwest, then migrates northward each spring in waves. In some years — especially after heavy winter rains — billions make the journey north through California. They prefer open sunny habitats: fields, meadows, gardens, roadsides, and chaparral. Whittier Narrows is a key stopover point during California migrations!</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>遍布除南極洲外所有大洲。在北美洲，整個族群在美墨邊境及沙漠西南部越冬，每年春天分波向北遷徙。在部分年份——尤其是冬雨豐沛之後——數十億隻穿越加州向北。偏好開闊陽光環境：田野、草地、花園、路邊及灌木叢林。惠提爾納洛斯是加州遷徙途中的重要中途站！</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🌿 What They Eat ／ 食物來源</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English — Caterpillars</div>Caterpillars are generalist feeders — they use over <strong>100 recorded host plant species</strong>! Main hosts include thistles, mallows, hollyhock, lupine, fiddleneck, and cheeseweed. Each caterpillar builds a messy silken tent on the plant where it feeds and hides. Caterpillars are grayish-brown with black spiny bristles and a yellow stripe running along the back.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文 — 毛毛蟲</div>毛毛蟲為廣食性——已記錄的寄主植物超過<strong>100種</strong>！主要寄主包括薊、錦葵、蜀葵、羽扇豆、費德勒草、芝士草等。每隻毛毛蟲在植物上織出凌亂的絲質巢帳，在其中覓食和躲藏。毛毛蟲呈灰褐色，帶黑色棘刺及黃色背縱紋。</div>
+    </div>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English — Adults</div>Adults are also generalist nectar feeders — visiting over 100 plant species. They are especially fond of asters, thistles, cosmos, red clover, milkweed, ironweed, and Joe-Pye weed. Painted Ladies are important pollinators across many ecosystems worldwide.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文 — 成蝶</div>成蝶同樣是廣食性蜜源訪花者——訪問超過 100 種植物。尤其喜愛紫苑、薊花、秋英、紅花苜蓿、馬利筋及澤蘭等。是全球多種生態系統中重要的授粉者。</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🔄 Life Cycle & Lifespan ／ 生命週期與壽命</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>Complete metamorphosis; egg to adult in 33–44 days in warm weather.
+        <ul>
+          <li><strong>Eggs:</strong> Small, pale green, barrel-shaped with vertical ribs, laid singly on host plant leaves.</li>
+          <li><strong>Caterpillars:</strong> Go through 5 instars (molts) over about 2 weeks. Each caterpillar lives in a messy silken tent full of frass (droppings) — not the tidiest housekeeping!</li>
+          <li><strong>Chrysalis:</strong> Metallic green, brown, or bluish-white with gold markings — quite beautiful.</li>
+          <li><strong>Adults:</strong> Lifespan about 2 to 4 weeks. Multiple generations per year.</li>
+          <li><strong>Migration:</strong> Northward-migrating Painted Ladies are reproductively immature and fly in a straight northwest line without stopping to feed or mate until their fat reserves are used up. The entire North American population makes the return journey south each autumn.</li>
+        </ul>
+      </div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>完全變態；在溫暖天氣下卵到成蝶約 33 至 44 天。
+        <ul>
+          <li><strong>卵：</strong>小而淡綠色，桶形帶垂直肋紋，單粒產在寄主植物葉片上。</li>
+          <li><strong>幼蟲：</strong>約 2 週經歷 5 個齡期（蛻皮）。每隻毛毛蟲住在充滿糞便的凌亂絲質巢帳中——清潔習慣實在不佳！</li>
+          <li><strong>蛹：</strong>金屬綠色、褐色或藍白色帶金色花紋——相當美麗。</li>
+          <li><strong>成蝶：</strong>壽命約 2 至 4 週。每年多個世代。</li>
+          <li><strong>遷徙：</strong>向北遷徙的彩蛺蝶在生殖上尚未成熟，以直線向西北飛行，不停下來覓食或交配，直到耗盡脂肪儲備。整個北美洲族群每年秋天南返。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section"><h2>💛 Mating Behavior ／ 求偶與交配行為</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>Males are territorial, perching in the late afternoon in sunny spots where females are likely to pass, often sharing sites with Red Admirals and West Coast Ladies. When a female approaches, the male pursues her. Males will mate with multiple females during their lifespan. After mating, females lay eggs immediately on suitable host plants.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>雄蝶具領域性，在午後停棲在陽光充足、雌蝶可能經過的地點，常與紅蛺蝶及西岸仕女蝶共享棲點。當雌蝶接近時，雄蝶展開追逐。雄蝶在一生中會與多隻雌蝶交配。交配後，雌蝶立即在適合的寄主植物上產卵。</div>
+    </div>
+  </div>
+
+  <div class="funfact"><div class="emoji">🌊</div><strong>Fun Fact for Visitors ／ 給訪客的趣味小知識</strong><hr>
+    <p><em>"In 2024, scientists confirmed that Painted Ladies crossed the Atlantic Ocean — over 4,000 miles! They were the first insect ever documented to cross an ocean. Scientists discovered this by analyzing wing pollen and stable isotopes. Talk about a world traveler!"</em></p>
+    <p>「2024年，科學家確認彩蛺蝶橫越了大西洋——超過 6,400 公里！牠們是有記錄以來第一種跨越海洋的昆蟲。科學家藉由分析翅膀上的花粉和穩定同位素發現了這一事實。這才是真正的世界旅行家！」</p>
+  </div>
+  <div class="qr-section"><h2>📱 Scan to See More Photos ／ 掃描查看更多照片</h2>
+    <div class="qr-grid">
+      <div class="qr-item"><div class="qr-box" id="q-pl1"></div><p><strong>Adult Butterfly 成蝶</strong></p></div>
+      <div class="qr-item"><div class="qr-box" id="q-pl2"></div><p><strong>California Migration 加州遷徙</strong></p></div>
+      <div class="qr-item"><div class="qr-box" id="q-pl3"></div><p><strong>Caterpillar 毛毛蟲</strong></p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ CABBAGE WHITE ══════════════ -->
+<div class="guide t-cbw" id="g-cbw">
+  <div class="guide-header">
+    <h1>🦋 Cabbage White Butterfly ／ 菜粉蝶</h1>
+    <p><em>Pieris rapae</em> — Bilingual Docent Guide 中英對照導覽手冊</p>
+  </div>
+  <div class="intro-box">📌 <strong>Docent Note 導覽員小提醒：</strong> The Cabbage White is one of the most common butterflies you will ever see — yet most people walk right past it! Originally from Europe and Asia, it arrived in North America in the 1860s and has since spread to every corner of the continent. It is often the <em>very first</em> butterfly to appear each spring.<br><br>菜粉蝶是您最常見到的蝴蝶之一——但大多數人對它視而不見！牠原產於歐洲與亞洲，於1860年代抵達北美洲後，迅速遍布整個大陸。牠通常是每年春天<em>最早</em>現身的蝴蝶。</div>
+
+  <div class="section"><h2>🎨 Appearance ／ 外觀特徵</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>The Cabbage White is a small-to-medium butterfly with a wingspan of about 1.5 to 2.5 inches (4.5–6.5 cm). Its wings are creamy white with black-tipped forewings. Here is the easiest way to tell male from female: <strong>males have one black spot</strong> on each forewing, while <strong>females have two black spots</strong>. Both sexes have a single black spot on the upper hindwing, and the undersides of the wings have a soft yellowish tinge. The overall appearance is deceptively simple — pure white in the garden is this butterfly's signature look.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>菜粉蝶是中小型蝴蝶，翼展約 4.5 至 6.5 公分。翅膀為乳白色，前翅尖端帶有黑色。分辨雌雄最簡單的方法：<strong>雄蝶每片前翅有一個黑點</strong>，<strong>雌蝶則有兩個黑點</strong>。雌雄後翅正面各有一個黑點，翅膀背面則帶有淡淡的黃色調。外觀看似樸素，但那一抹純白正是牠在花園中最鮮明的標誌。</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🗺️ Range & Habitat ／ 分布範圍與棲息地</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>The Cabbage White is one of the most widespread butterflies on Earth. It is native to Europe and Asia, originating in the Eastern Mediterranean region. It was accidentally introduced to Montreal, Canada around 1860 and has since spread across all of North America, as well as Australia and New Zealand. Today it is found on every continent except Antarctica. Its habitat is extremely versatile — it thrives in gardens, parks, roadsides, weedy fields, farms, and urban areas. Wherever there are plants in the mustard or cabbage family, you will likely find this butterfly.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>菜粉蝶是地球上分布最廣的蝴蝶之一，原產於歐洲與亞洲，起源於地中海東部地區。約於1860年被無意間引入加拿大蒙特婁，此後迅速遍布整個北美洲，並擴散至澳洲與紐西蘭，現今除南極洲外各大洲皆有其蹤跡。牠的適應力極強，活躍於花園、公園、路邊、雜草叢生的田野、農場及城市地區。只要有十字花科或芸薹科植物的地方，幾乎都能見到牠的身影。</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🌿 What They Eat ／ 食物來源</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English — Caterpillars</div>Caterpillars feed on plants in the mustard family (Brassicaceae). Host plants include cabbage, broccoli, cauliflower, kale, Brussels sprouts, collards, radish, mustard, and horseradish — essentially any vegetable in the cabbage or mustard family. The caterpillars can be serious garden pests, sometimes eating plants down to bare stems. Their voracious appetite is remarkable: a caterpillar's body mass can more than <em>double every single day</em> during feeding!</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文 — 毛毛蟲</div>毛毛蟲以十字花科（Brassicaceae）植物為食，寄主植物包括高麗菜、青花菜、花椰菜、羽衣甘藍、球芽甘藍、芥藍、白蘿蔔、芥菜及辣根——幾乎所有高麗菜與芥菜科的蔬菜都是牠的食物。毛毛蟲對菜園危害不小，有時能將整株植物啃食得只剩莖部。牠們的食量驚人：在大量進食期間，毛毛蟲的體重每天可以增加超過一倍！</div>
+    </div>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English — Adults</div>Adult butterflies feed on flower nectar from a wide variety of plants. They especially prefer flowers from the mustard family, but also visit dandelions, red clover, asters, and mints. Interestingly, they prefer purple, blue, and yellow flowers over red or white ones, and can even see ultraviolet light — which helps them locate flowers with UV nectar guides invisible to the human eye. Despite the caterpillar being a pest, the adult butterfly is a beneficial pollinator of crop plants.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文 — 成蝶</div>成蝶以各種植物的花蜜為食，尤其偏愛十字花科的花卉，也會訪蒲公英、紅花苜蓿、紫苑及薄荷等。有趣的是，牠們偏好紫色、藍色和黃色的花朵，更能看見紫外線光——這讓牠們能夠察覺花朵上肉眼不可見的紫外線蜜導（花蜜引導標記）。雖然毛毛蟲是農業害蟲，但成蝶卻是農作物重要的授粉者。</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🔄 Life Cycle & Lifespan ／ 生命週期與壽命</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>The Cabbage White undergoes <strong>complete metamorphosis</strong>: egg → caterpillar → chrysalis → adult.
+        <ul>
+          <li><strong>Eggs:</strong> Females lay 300 to 400 eggs in their lifetime, one at a time, on the undersides of host plant leaves. Eggs are pale white, turning more yellow as they age, and hatch in about one week.</li>
+          <li><strong>Caterpillars:</strong> The bright green "imported cabbageworm" grows through 5 instars (molts) over about 2 to 3 weeks. It has a faint yellow stripe along its back. Its green color is excellent camouflage among leaf vegetables.</li>
+          <li><strong>Chrysalis:</strong> Grey, green, yellow, or brown — about 19–20 mm long — blending in with plant stems and debris. Butterflies that pupate in autumn overwinter in the chrysalis stage and emerge in spring.</li>
+          <li><strong>Adults:</strong> Adult lifespan is about 3 to 6 weeks total, with roughly 3 weeks spent as an adult butterfly.</li>
+          <li><strong>Broods in California:</strong> In Southern California's warm climate, there are <strong>3 to 5 generations per year</strong>. It is typically the first butterfly to appear in spring and one of the last flying in autumn.</li>
+        </ul>
+      </div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>菜粉蝶經歷<strong>完全變態</strong>：卵 → 幼蟲 → 蛹 → 成蝶。
+        <ul>
+          <li><strong>卵：</strong>雌蝶一生可產下 300 至 400 粒卵，一次一粒，產於寄主植物葉片背面。卵初為淡白色，隨時間逐漸變黃，約一週後孵化。</li>
+          <li><strong>幼蟲：</strong>俗稱「菜青蟲」的鮮綠色毛毛蟲，經歷五次蛻皮，約需 2 至 3 週成長。背部有一條淡黃色縱紋，綠色外觀在葉菜叢中是極佳的保護色。</li>
+          <li><strong>蛹：</strong>灰色、綠色、黃色或褐色，長約 19 至 20 公釐，與植物莖桿及枯葉融為一體。秋季化蛹的個體會以蛹的形態越冬，待春天羽化。</li>
+          <li><strong>成蝶：</strong>整體壽命約 3 至 6 週，其中約 3 週為成蝶階段。</li>
+          <li><strong>加州世代數：</strong>在南加州溫暖的氣候下，每年可繁殖 <strong>3 至 5 個世代</strong>。通常是春天最早出現、秋天最晚消失的蝴蝶之一。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section"><h2>💛 Mating Behavior ／ 求偶與交配行為</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>Female Cabbage Whites mate only <em>once</em> in their lifetime, as early adults, usually around midday when temperatures are warmest. Males actively patrol open areas searching for females. After mating, the female's behavior changes dramatically — she immediately begins the task of searching for suitable host plants on which to lay her eggs. She uses both vision and chemical receptors on her feet (taste receptors!) to identify the right plants.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>雌性菜粉蝶一生只交配<em>一次</em>，通常在羽化後不久、氣溫最高的正午前後進行。雄蝶積極在開闊區域飛行尋找雌蝶。交配後，雌蝶的行為發生明顯轉變——立即開始尋找適合的寄主植物產卵。牠同時利用視覺及腳上的化學感受器（味覺感受器！）來辨識合適的植物。</div>
+    </div>
+  </div>
+
+  <div class="funfact"><div class="emoji">🌸</div><strong>Fun Fact for Visitors ／ 給訪客的趣味小知識</strong><hr>
+    <p><em>"Count the spots! One spot = male. Two spots = female. Now you're a butterfly expert! And remember — even though the caterpillar is a garden pest, the adult butterfly is an important pollinator for crops."</em></p>
+    <p>「數黑點！一個黑點 = 雄蝶。兩個黑點 = 雌蝶。您現在已經是蝴蝶專家了！記住——雖然毛毛蟲是菜園害蟲，但成蝶卻是農作物的重要授粉者。」</p>
+  </div>
+  <div class="qr-section"><h2>📱 Scan to See More Photos ／ 掃描查看更多照片</h2>
+    <div class="qr-grid">
+      <div class="qr-item"><div class="qr-box" id="q-cbw1"></div><p><strong>Adult Butterfly 成蝶</strong></p></div>
+      <div class="qr-item"><div class="qr-box" id="q-cbw2"></div><p><strong>Cabbageworm 菜青蟲</strong></p></div>
+      <div class="qr-item"><div class="qr-box" id="q-cbw3"></div><p><strong>Male vs Female 雌雄對比</strong></p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ SANDHILL SKIPPER ══════════════ -->
+<div class="guide t-ss" id="g-ss">
+  <div class="guide-header">
+    <h1>🦋 Sandhill Skipper ／ 沙丘弄蝶</h1>
+    <p><em>Polites sabuleti</em> — Bilingual Docent Guide 中英對照導覽手冊</p>
+  </div>
+  <div class="intro-box">🌾 <strong>About Skippers 關於弄蝶：</strong> Skippers are a distinct group — sometimes called the "third group" between butterflies and moths. They have stout, hairy bodies, hooked antennae tips, and fast, darting flight — quite different from the fluttery flight of true butterflies. The Sandhill Skipper is one of California's most common and widespread skippers, found in almost any grassy area.<br><br>弄蝶是一個獨特的群體——有時被稱為蝴蝶與蛾之間的「第三群體」。牠們體型粗壯多毛，觸角尖端帶鉤，飛行快速急促——與真正蝴蝶飄逸的飛行方式截然不同。沙丘弄蝶是加州最常見、分布最廣的弄蝶之一，幾乎在任何草地都能發現。</div>
+
+  <div class="section"><h2>🎨 Appearance ／ 外觀特徵</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>The Sandhill Skipper is a small butterfly with a wingspan of 7/8 to 1¼ inches (2.2–3.2 cm). Males have yellow-orange upper wings with dark toothed borders and a sinuous dark stigma (a scent patch) on the forewing — unique to males. Females have heavier dark markings and almost transparent light spots, with no stigma. The underside of the hindwing in both sexes is yellow-tan with yellow veins and dark chevron patterns at the outer margin — a useful field mark for identification. Like all skippers, they hold their wings at a characteristic angle when perching.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>沙丘弄蝶是小型蝴蝶，翼展 2.2 至 3.2 公分。雄蝶正面為黃橙色，帶鋸齒狀黑色邊框及前翅上彎曲的深色氣味鱗（stigma）——是雄蝶獨有的特徵。雌蝶黑色花紋較重，有近乎透明的淡色斑點，無氣味鱗。雌雄後翅背面均為黃褐色帶黃色翅脈及黑色人字形圖案——有助於辨識的野外特徵。和所有弄蝶一樣，停棲時翅膀以特有角度展開。</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🗺️ Range & Habitat ／ 分布範圍與棲息地</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>Found from southern British Columbia south through California and northern Arizona to Baja California, and east to Wyoming and Colorado. Also introduced to Hawaii. A habitat generalist — found in alkali grasslands, moist meadows, lawns, salt marshes, sand dunes, sagebrush flats, and alpine areas up to high elevations. In Southern California it is frequently found in suburban lawns, parks, and any area with Bermuda grass or saltgrass. Whittier Narrows' open grassy areas and salt marsh habitat are ideal!</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>分布從英屬哥倫比亞南部向南穿越加州至下加利福尼亞半島，向東至懷俄明州及科羅拉多州。也已引入夏威夷。棲地廣泛——包括鹼性草地、濕潤草地、草坪、鹽沼、沙丘、鼠尾草草原及高山地帶。在南加州，常見於郊區草坪、公園及任何有百慕達草或鹽草之處。惠提爾納洛斯的開闊草地及鹽沼棲地是理想環境！</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🌿 What They Eat ／ 食物來源</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English — Caterpillars</div>Caterpillars feed on grasses. The main host plants are <strong>saltgrass (<em>Distichlis spicata</em>)</strong> and <strong>Bermuda grass (<em>Cynodon dactylon</em>)</strong>. The adoption of Bermuda grass as a host — a common introduced lawn grass — has helped this species thrive in urban and suburban areas of Southern California. Caterpillars feed on grass leaves and rest in shelters of tied leaves.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文 — 毛毛蟲</div>毛毛蟲以禾草為食，主要寄主植物為<strong>鹽草（<em>Distichlis spicata</em>）</strong>及<strong>百慕達草（<em>Cynodon dactylon</em>）</strong>。採用百慕達草——一種常見的引進草坪草——作為寄主，幫助這種蝴蝶在南加州的城市及郊區環境中繁盛生長。毛毛蟲以草葉為食，在捆綁葉片形成的巢穴中休息。</div>
+    </div>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English — Adults</div>Adults feed on flower nectar from a variety of small flowers in their grassy habitats. Males use special scent scales (the stigma on the forewing) to produce pheromones to attract females. They are fast, low fliers, spending much of the day perching in grassy areas.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文 — 成蝶</div>成蝶以棲地中各種小花的花蜜為食。雄蝶利用前翅上的特殊氣味鱗（stigma）產生費洛蒙吸引雌蝶。牠們飛行快速而低矮，大部分時間在草地上停棲活動。</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🔄 Life Cycle & Lifespan ／ 生命週期與壽命</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>Complete metamorphosis.
+        <ul>
+          <li><strong>Eggs:</strong> Laid singly on or near host grass plants; hatch in 1 to 2 weeks depending on temperature.</li>
+          <li><strong>Caterpillars:</strong> Develop through 5 instars in 3 to 10 weeks. Some subspecies' chrysalids overwinter and hatch as adults in spring.</li>
+          <li><strong>Adults:</strong> The California lowland subspecies (<em>P. s. sabuleti</em>) can have up to <strong>5 generations per year</strong>, with flights from March through November! At high elevations: only 1 generation per year (June–August).</li>
+        </ul>
+      </div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>完全變態。
+        <ul>
+          <li><strong>卵：</strong>單粒產在寄主草植物上或附近；依溫度不同，1 至 2 週孵化。</li>
+          <li><strong>幼蟲：</strong>經歷 5 個齡期，歷時 3 至 10 週。部分亞種以蛹越冬，春天羽化。</li>
+          <li><strong>成蝶：</strong>加州低地亞種（<em>P. s. sabuleti</em>）每年可繁殖多達 <strong>5個世代</strong>，飛行期從三月延續至十一月！在高海拔地區：每年只有 1 個世代（6–8 月）。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section"><h2>💛 Mating Behavior ／ 求偶與交配行為</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>Males perch all day in low grassy areas, watching for females passing by — a behavior called "perching." They use chemical pheromones produced by the special scent scales (stigma) on their forewings to attract females. Females deposit eggs singly on the host plant or on nearby plants. Unlike many butterflies, skippers often perch with wings spread flat, orienting their bodies to absorb maximum warmth from the sun.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>雄蝶整天在低矮草地停棲守候雌蝶——稱為「守候（perching）」行為。牠們利用前翅氣味鱗（stigma）產生的化學費洛蒙吸引雌蝶。雌蝶將卵單粒產在寄主植物上或附近。與許多蝴蝶不同，弄蝶常平展翅膀停棲，身體朝向能吸收最多陽光熱量的方向。</div>
+    </div>
+  </div>
+
+  <div class="funfact"><div class="emoji">🌾</div><strong>Fun Fact for Visitors ／ 給訪客的趣味小知識</strong><hr>
+    <p><em>"Skippers are sometimes called the 'third group' between butterflies and moths. Look at the antennae tips — true butterflies have smooth club-shaped tips, but skippers have a hooked tip like a bent finger. That little hook is the key field mark!"</em></p>
+    <p>「弄蝶有時被稱為蝴蝶和蛾之間的『第三群體』。看看觸角的尖端——真正的蝴蝶觸角尖端是光滑的球棒狀，但弄蝶的尖端像彎曲的手指一樣帶有鉤子。那個小鉤子就是關鍵的辨識特徵！」</p>
+  </div>
+  <div class="qr-section"><h2>📱 Scan to See More Photos ／ 掃描查看更多照片</h2>
+    <div class="qr-grid">
+      <div class="qr-item"><div class="qr-box" id="q-ss1"></div><p><strong>Male Adult 雄性成蝶</strong></p></div>
+      <div class="qr-item"><div class="qr-box" id="q-ss2"></div><p><strong>Female Adult 雌性成蝶</strong></p></div>
+      <div class="qr-item"><div class="qr-box" id="q-ss3"></div><p><strong>Skipper Antennae 弄蝶觸角構造</strong></p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ SLEEPY DUSKYWING ══════════════ -->
+<div class="guide t-sd" id="g-sd">
+  <div class="guide-header">
+    <h1>🦋 Sleepy Duskywing ／ 睡暮翅弄蝶</h1>
+    <p><em>Erynnis brizo</em> — Bilingual Docent Guide 中英對照導覽手冊</p>
+  </div>
+  <div class="intro-box">🌳 <strong>Oak Woodland Specialist 橡樹林專家：</strong> The Sleepy Duskywing is one of the earliest flying butterflies of the year — appearing as early as January in California. It is a specialist of oak woodland and chaparral, completely dependent on oak trees for its larval stage. Despite its dark, understated appearance, it is a fascinating and ecologically important part of California's oak ecosystem.<br><br>睡暮翅弄蝶是全年最早飛翔的蝴蝶之一——在加州最早在一月就可以見到。牠是橡樹林與灌木叢林的專一性物種，幼蟲階段完全依賴橡樹。儘管外觀低調暗淡，牠卻是加州橡樹生態系統中一個令人著迷且生態上不可或缺的物種。</div>
+
+  <div class="section"><h2>🎨 Appearance ／ 外觀特徵</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>The Sleepy Duskywing has a wingspan of 1¼ to 1¾ inches (3.2–4.5 cm). The upper wing surface is dark brown with two wide grayish-brown bands across the forewing and — this is the key field mark — <strong>NO transparent spots</strong> (most similar species have transparent spots, making their absence the best way to identify this species). Hindwings are almost completely brown with lighter brown spots. Males have a costal fold on the forewing containing yellow scent scales; females have a patch of scent scales on the abdomen. The antennae clubs are distinctively blunt-tipped. Like all Duskywings, it holds its wings spread flat when perching — looking like it is taking a nap, which is where the name "Sleepy" comes from!</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>睡暮翅弄蝶翼展 3.2 至 4.5 公分。翅膀正面為深褐色，前翅有兩條寬灰褐色帶，而且——這是關鍵的辨識特徵——<strong>無透明斑點</strong>（大多數相似物種都有透明斑點，因此其缺席是辨識本物種最好的方法）。後翅幾乎全褐色，帶有較淡的褐色斑點。雄蝶前翅前緣有含黃色氣味鱗的摺疊構造；雌蝶腹部有一塊氣味鱗。觸角棒末端特別鈍圓。和所有暮翅弄蝶一樣，停棲時翅膀平展——看起來就像在打盹，「睡」字正是由此而來！</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🗺️ Range & Habitat ／ 分布範圍與棲息地</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>In the west: from California east to Utah and Wyoming, south to Arizona, New Mexico, and Baja California. In the east: from Manitoba south through the eastern US to Florida and Texas. Habitat: oak and oak-pine scrub, chaparral, and barrens on well-drained sandy or rocky soils. This butterfly is very habitat-specific — wherever scrub oaks grow. In Southern California, look for it in chaparral hillsides and oak woodlands adjacent to Whittier Narrows.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>西部：從加州向東至猶他州和懷俄明州，向南至亞利桑那州、新墨西哥州及下加利福尼亞半島。東部：從馬尼托巴向南穿越美國東部至佛羅里達州及德克薩斯州。棲地：排水良好的砂質或岩石土壤上的橡樹及橡樹松林灌叢、灌木叢林及荒地。這種蝴蝶的棲地需求非常專一——凡有矮橡樹生長之處。在南加州，可在惠提爾納洛斯附近的灌木叢林山坡及橡樹林中尋找。</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🌿 What They Eat ／ 食物來源</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English — Caterpillars</div>Caterpillars feed exclusively on <strong>oak species (Quercus)</strong> — primarily scrubby oaks such as leather oak, grey oak, and coast live oak. In California, leather oak (<em>Quercus durata</em>) and grey oak (<em>Quercus turbinella</em>) are confirmed host plants. Caterpillars are pale green with a darker dorsal stripe and construct silk-lined leaf rolls for shelter, overwintering as fully grown caterpillars inside these leaf shelters.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文 — 毛毛蟲</div>毛毛蟲專門以<strong>橡樹屬（Quercus）</strong>植物為食——主要是矮生橡樹，如皮革橡（Quercus durata）、灰橡（Quercus turbinella）及海岸活橡。在加州，皮革橡與灰橡是確認的寄主植物。毛毛蟲為淡綠色帶深色背縱紋，以絲質內襯的捲葉巢穴為棲所，以完全成長的毛毛蟲形態在這些葉巢中越冬。</div>
+    </div>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English — Adults</div>Adults feed on nectar from early spring flowers, including wild azalea, blueberry, blackberry, dandelion, and cinquefoils. Like all Duskywings, they also "puddle" at mud or damp soil for additional minerals and moisture.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文 — 成蝶</div>成蝶以早春花卉的花蜜為食，包括野生杜鵑、藍莓、黑莓、蒲公英及委陵菜等。和所有暮翅弄蝶一樣，也會在濕泥或濕土旁「吸水」攝取額外的礦物質與水分。</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🔄 Life Cycle & Lifespan ／ 生命週期與壽命</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>Complete metamorphosis. The Sleepy Duskywing is <strong>univoltine</strong> — only <strong>ONE generation per year</strong> throughout its entire range (this is unusual for a California butterfly!).
+        <ul>
+          <li><strong>Eggs:</strong> Pale green, dome-shaped with 15 prominent vertical ribs, laid singly on young oak leaves or buds. Hatch in about 8 days.</li>
+          <li><strong>Caterpillars:</strong> Stout, pale green with darker dorsal stripes, building silk-leaf roll shelters. Overwinter as fully grown caterpillars — resuming development in early spring.</li>
+          <li><strong>Chrysalis:</strong> Formed inside leaf litter or soil; greenish initially. Adults emerge in late winter to early spring.</li>
+          <li><strong>Adults:</strong> Flight period in California is January through May — one of the earliest butterflies of the year! Adults live only a few weeks.</li>
+        </ul>
+      </div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>完全變態。睡暮翅弄蝶為<strong>單化性（univoltine）</strong>——整個分布範圍內每年只有<strong>一個世代</strong>（這在加州蝴蝶中相當罕見！）。
+        <ul>
+          <li><strong>卵：</strong>淡綠色，圓頂形，帶 15 條明顯垂直肋紋，單粒產在嫩橡樹葉或葉芽上。約 8 天孵化。</li>
+          <li><strong>幼蟲：</strong>粗壯，淡綠色帶深色背縱紋，以絲質捲葉巢為棲所。以完全成長的毛毛蟲越冬——早春再恢復發育。</li>
+          <li><strong>蛹：</strong>形成於落葉層或土壤中，初期呈綠色。成蝶在冬末至早春羽化。</li>
+          <li><strong>成蝶：</strong>加州飛行期為一月至五月——是全年最早出現的蝴蝶之一！成蝶壽命只有數週。</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section"><h2>💛 Mating Behavior ／ 求偶與交配行為</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>Males perch in clearings and on hilltops throughout the day to watch for females ("hilltopping"). When male density is high, they also patrol around host plants. Males have a costal fold on the forewing containing yellow scent scales used to produce pheromones. Females deposit single eggs exclusively on young oak leaves or leaf buds, showing strict selectivity in choosing egg-laying sites.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>雄蝶整天在林中空地及山丘頂端停棲守候雌蝶（「登頂」行為）。雄蝶密度高時，也會在寄主植物周圍巡飛。雄蝶前翅前緣有含黃色氣味鱗的摺疊構造，用於產生費洛蒙。雌蝶將卵單粒產在嫩橡樹葉或葉芽上，選擇產卵地點非常嚴格。</div>
+    </div>
+  </div>
+
+  <div class="section"><h2>🌍 Conservation Status ／ 保育現況</h2>
+    <div class="bilingual">
+      <div class="en"><div class="lang-label">🇺🇸 English</div>Rated G5 — Globally Secure. However, it is listed as <strong>Threatened in Connecticut</strong> and Special Concern in New Jersey. The main threats are loss of oak scrub/chaparral habitat through development, fire suppression (which leads to forest closure and loss of open habitat), and degradation of well-drained sandy or rocky soil habitats. Because it is univoltine, populations cannot recover quickly from local disturbances.</div>
+      <div class="zh"><div class="lang-label">🇹🇼 繁體中文</div>全球保育等級 G5（全球穩定）。然而，在康涅狄格州被列為<strong>「受威脅（Threatened）」</strong>，在新澤西州被列為特別關注物種。主要威脅包括開發造成的橡樹灌叢/灌木叢林棲地喪失、火災管制（導致森林封閉及開放棲地喪失）及砂質或岩石土壤棲地退化。由於是單化性物種，族群遭受地區性干擾後恢復緩慢。</div>
+    </div>
+  </div>
+
+  <div class="funfact"><div class="emoji">🌳</div><strong>Fun Fact for Visitors ／ 給訪客的趣味小知識</strong><hr>
+    <p><em>"The Sleepy Duskywing gets its name because adults are often found resting with wings spread flat on leaves or bark in the sun — looking like they're taking a nap! The name also hints at its early-season appearance, before most other butterflies have 'woken up' for the year."</em></p>
+    <p>「睡暮翅弄蝶的名字源於成蝶常常在葉片或樹皮上平展翅膀曬太陽休息——看起來就像在打盹！這個名字也暗示牠出現在早春，比大多數其他蝴蝶在一年中『甦醒』更早。」</p>
+  </div>
+  <div class="qr-section"><h2>📱 Scan to See More Photos ／ 掃描查看更多照片</h2>
+    <div class="qr-grid">
+      <div class="qr-item"><div class="qr-box" id="q-sd1"></div><p><strong>Adult Butterfly 成蝶</strong></p></div>
+      <div class="qr-item"><div class="qr-box" id="q-sd2"></div><p><strong>Wing Pattern Detail 翅膀圖案細節</strong></p></div>
+      <div class="qr-item"><div class="qr-box" id="q-sd3"></div><p><strong>Scrub Oak Host Plant 橡樹寄主植物</strong></p></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ JAVASCRIPT ══════════════ -->
+<script>
+function show(id) {
+  document.querySelectorAll('.guide').forEach(g => g.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('g-' + id).classList.add('active');
+  document.querySelector('.tab-btn.c-' + id).classList.add('active');
+}
+
+window.onload = function() {
+  const qrs = [
+    ['q-wts1','#4a7c3f','Western Tiger Swallowtail butterfly adult California'],
+    ['q-wts2','#4a7c3f','Western Tiger Swallowtail caterpillar green osmeterium'],
+    ['q-wts3','#4a7c3f','Western Tiger Swallowtail chrysalis pupa green'],
+    ['q-pv1','#2a2a8a','Pipevine Swallowtail Battus philenor adult iridescent blue'],
+    ['q-pv2','#2a2a8a','Pipevine Swallowtail caterpillar red orange tubercles'],
+    ['q-pv3','#2a2a8a','Aristolochia californica California Pipevine Dutchman pipe'],
+    ['q-ans1','#2d6a1f','Anise Swallowtail Papilio zelicaon adult butterfly California'],
+    ['q-ans2','#2d6a1f','Anise Swallowtail caterpillar green osmeterium orange'],
+    ['q-ans3','#2d6a1f','sweet fennel Foeniculum vulgare plant California'],
+    ['q-wgs1','#7a5500','Western Giant Swallowtail Papilio rumiko adult butterfly'],
+    ['q-wgs2','#7a5500','Giant Swallowtail orange dog caterpillar citrus bird dropping'],
+    ['q-wgs3','#7a5500','Giant Swallowtail butterfly size large wingspan'],
+    ['q-dog1','#7a5c00','California Dogface butterfly Zerene eurydice male poodle face'],
+    ['q-dog2','#7a5c00','California Dogface butterfly female pale yellow'],
+    ['q-dog3','#7a5c00','Amorpha californica False Indigo shrub California'],
+    ['q-ra1','#8b1a1a','Red Admiral butterfly Vanessa atalanta adult wings open'],
+    ['q-ra2','#8b1a1a','Red Admiral butterfly caterpillar nettle black spines'],
+    ['q-ra3','#8b1a1a','Red Admiral butterfly chrysalis dead leaf camouflage'],
+    ['q-mon1','#b85c00','Monarch butterfly Danaus plexippus adult milkweed flower'],
+    ['q-mon2','#b85c00','Monarch butterfly caterpillar yellow black white stripes'],
+    ['q-mon3','#b85c00','Monarch butterfly migration overwintering California Mexico'],
+    ['q-mc1','#5a1a1a','Mourning Cloak butterfly Nymphalis antiopa adult maroon yellow'],
+    ['q-mc2','#5a1a1a','Mourning Cloak spiny elm caterpillar black red spots'],
+    ['q-mc3','#5a1a1a','Mourning Cloak butterfly bark camouflage wings closed'],
+    ['q-pl1','#b84800','Painted Lady butterfly Vanessa cardui adult orange black'],
+    ['q-pl2','#b84800','Painted Lady butterfly migration California billions'],
+    ['q-pl3','#b84800','Painted Lady caterpillar thistle spiny bristles'],
+    ['q-cbw1','#2e6b9e','Cabbage White butterfly Pieris rapae adult white wings'],
+    ['q-cbw2','#2e6b9e','Cabbage White caterpillar imported cabbageworm green yellow'],
+    ['q-cbw3','#2e6b9e','Cabbage White butterfly male female black spots comparison'],
+    ['q-ss1','#1a5a5a','Sandhill Skipper Polites sabuleti male yellow orange stigma'],
+    ['q-ss2','#1a5a5a','Sandhill Skipper female underside hindwing chevron'],
+    ['q-ss3','#1a5a5a','skipper butterfly hooked antennae club tip identification'],
+    ['q-sd1','#2a2a5a','Sleepy Duskywing Erynnis brizo adult wings spread flat'],
+    ['q-sd2','#2a2a5a','Sleepy Duskywing forewing gray bands no transparent spots'],
+    ['q-sd3','#2a2a5a','California leather oak scrub oak chaparral Quercus durata']
+  ];
+  qrs.forEach(([id, color, query]) => {
+    const el = document.getElementById(id);
+    if (el) new QRCode(el, {
+      text: 'https://www.google.com/search?tbm=isch&q=' + encodeURIComponent(query),
+      width: 88, height: 88, colorDark: color
+    });
+  });
+};
+</script>
+</body>
+</html>
