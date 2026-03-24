@@ -75,10 +75,13 @@
   .photo-frame { display:flex; justify-content:center; align-items:flex-start; gap:16px; flex-wrap:wrap; }
   .photo-item { text-align:center; max-width:500px; width:100%; }
   .photo-item img {
-    width:100%; max-width:500px; height:300px;
-    object-fit:cover; border-radius:12px;
-    box-shadow:0 4px 14px rgba(0,0,0,.18);
-  }
+    width: 100%;
+    max-width: 500px;
+    height: auto;        /* ← lets height adjust to the image */
+    object-fit: contain; /* ← shows full image, no cropping */
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(0,0,0,.18);
+	}
   .photo-item .photo-caption { font-size:.78em; color:#666; margin-top:7px; line-height:1.45; }
   .photo-missing {
     width:100%; max-width:500px; height:200px;
