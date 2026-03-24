@@ -69,6 +69,65 @@
   ul  { margin:4px 0 0; padding-left:18px; }
   li  { margin-bottom:4px; }
 
+  /* ── BUTTERFLY PHOTO SECTION ── */
+  .photo-section { margin-top:20px; padding-top:16px; }
+  .photo-section h2 { text-align:center; font-size:.95em; margin-bottom:12px; }
+  .photo-frame { display:flex; justify-content:center; align-items:flex-start; gap:16px; flex-wrap:wrap; }
+  .photo-item { text-align:center; max-width:500px; width:100%; }
+  .photo-item img {
+    width:100%; max-width:500px; height:300px;
+    object-fit:cover; border-radius:12px;
+    box-shadow:0 4px 14px rgba(0,0,0,.18);
+  }
+  .photo-item .photo-caption { font-size:.78em; color:#666; margin-top:7px; line-height:1.45; }
+  .photo-missing {
+    width:100%; max-width:500px; height:200px;
+    background:#f8f8f8; border:2px dashed #ccc; border-radius:12px;
+    display:flex; align-items:center; justify-content:center;
+    color:#aaa; font-size:.85em; flex-direction:column; gap:8px;
+  }
+
+  /* Per-butterfly photo border colors */
+  .t-wts .photo-item img  { border:3px solid #7aba50; }
+  .t-pv  .photo-item img  { border:3px solid #5555cc; }
+  .t-ans .photo-item img  { border:3px solid #6abf47; }
+  .t-wgs .photo-item img  { border:3px solid #e8a800; }
+  .t-dog .photo-item img  { border:3px solid #d4a800; }
+  .t-ra  .photo-item img  { border:3px solid #cc3300; }
+  .t-mon .photo-item img  { border:3px solid #f0820a; }
+  .t-mc  .photo-item img  { border:3px solid #8b3030; }
+  .t-pl  .photo-item img  { border:3px solid #f07030; }
+  .t-cbw .photo-item img  { border:3px solid #6aaddb; }
+  .t-ss  .photo-item img  { border:3px solid #30a0a0; }
+  .t-sd  .photo-item img  { border:3px solid #6060aa; }
+
+  .t-wts .photo-item .photo-caption strong { color:#4a7c3f; }
+  .t-pv  .photo-item .photo-caption strong { color:#2a2a8a; }
+  .t-ans .photo-item .photo-caption strong { color:#2d6a1f; }
+  .t-wgs .photo-item .photo-caption strong { color:#7a5500; }
+  .t-dog .photo-item .photo-caption strong { color:#7a5c00; }
+  .t-ra  .photo-item .photo-caption strong { color:#8b1a1a; }
+  .t-mon .photo-item .photo-caption strong { color:#b85c00; }
+  .t-mc  .photo-item .photo-caption strong { color:#5a1a1a; }
+  .t-pl  .photo-item .photo-caption strong { color:#b84800; }
+  .t-cbw .photo-item .photo-caption strong { color:#2e6b9e; }
+  .t-ss  .photo-item .photo-caption strong { color:#1a5a5a; }
+  .t-sd  .photo-item .photo-caption strong { color:#2a2a5a; }
+
+  /* Per-butterfly photo section divider color */
+  .t-wts .photo-section { border-top:2px dashed #c8e0b0; }
+  .t-pv  .photo-section { border-top:2px dashed #9090dd; }
+  .t-ans .photo-section { border-top:2px dashed #a0d870; }
+  .t-wgs .photo-section { border-top:2px dashed #d4c060; }
+  .t-dog .photo-section { border-top:2px dashed #d4b800; }
+  .t-ra  .photo-section { border-top:2px dashed #e0b0a0; }
+  .t-mon .photo-section { border-top:2px dashed #e8c080; }
+  .t-mc  .photo-section { border-top:2px dashed #c09090; }
+  .t-pl  .photo-section { border-top:2px dashed #f0a080; }
+  .t-cbw .photo-section { border-top:2px dashed #a0c8e0; }
+  .t-ss  .photo-section { border-top:2px dashed #80c8c8; }
+  .t-sd  .photo-section { border-top:2px dashed #9090cc; }
+
   /* ── COLOUR THEMES ── */
   .t-wts h1,.t-wts .section h2{color:#4a7c3f}.t-wts .section{border-left:4px solid #7aba50}
   .t-wts .intro-box{background:#edfae0;border:2px solid #7aba50;color:#1a4a0a}
@@ -259,6 +318,23 @@
     <p><em>"This butterfly's entire adult life lasts less than two weeks — so if you're seeing it today, you're witnessing one of nature's most beautiful and fleeting miracles!"</em></p>
     <p>「這隻美麗的蝴蝶，成蟲的一生只有短短不到兩個星期。您今天在這裡看到牠，正是見證了大自然最美麗、也最短暫的奇蹟！」</p>
   </div>
+
+  <!-- 📸 PHOTO — add images/western-tiger-swallowtail.jpg to your images/ folder -->
+  <div class="photo-section">
+    <h2>📸 Butterfly Photo ／ 蝴蝶照片</h2>
+    <div class="photo-frame">
+      <div class="photo-item">
+        <img src="images/WesternTigerSwallowtail.jpg"
+             alt="Western Tiger Swallowtail butterfly Papilio rutulus"
+             onerror="this.outerHTML='<div class=photo-missing><span>📷</span><span>Photo coming soon ／ 照片即將加入<br>Save as: images/western-tiger-swallowtail.jpg</span></div>'">
+        <div class="photo-caption">
+          <strong>Western Tiger Swallowtail ／ 西方虎鳳蝶</strong><br>
+          <em>Papilio rutulus</em>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="qr-section"><h2>📱 Scan to See More Photos ／ 掃描查看更多照片</h2>
     <div class="qr-grid">
       <div class="qr-item"><div class="qr-box" id="q-wts1"></div><p><strong>Adult Butterfly 成蝶</strong></p></div>
@@ -334,6 +410,23 @@
     <p><em>"This butterfly is toxic at EVERY stage of its life — even the eggs! The mother passes her plant toxins straight into her eggs to protect them before they even hatch."</em></p>
     <p>「這種蝴蝶在生命的每一個階段都有毒——連卵也不例外！母蝶將植物毒素直接傳入卵中，在卵孵化之前就提供保護。」</p>
   </div>
+
+  <!-- 📸 PHOTO — add images/pipevine-swallowtail.jpg to your images/ folder -->
+  <div class="photo-section">
+    <h2>📸 Butterfly Photo ／ 蝴蝶照片</h2>
+    <div class="photo-frame">
+      <div class="photo-item">
+        <img src="images/PipevineSwallowtail.jpg"
+             alt="Pipevine Swallowtail butterfly Battus philenor"
+             onerror="this.outerHTML='<div class=photo-missing><span>📷</span><span>Photo coming soon ／ 照片即將加入<br>Save as: images/pipevine-swallowtail.jpg</span></div>'">
+        <div class="photo-caption">
+          <strong>Pipevine Swallowtail ／ 管花鳳蝶</strong><br>
+          <em>Battus philenor</em>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="qr-section"><h2>📱 Scan to See More Photos ／ 掃描查看更多照片</h2>
     <div class="qr-grid">
       <div class="qr-item"><div class="qr-box" id="q-pv1"></div><p><strong>Adult Butterfly 成蝶</strong></p></div>
@@ -408,6 +501,23 @@
     <p><em>"If you have fennel growing in your yard, you likely have Anise Swallowtail caterpillars! Check the stems and leaves — they start looking like bird droppings, then transform into spectacular green caterpillars with orange spots."</em></p>
     <p>「如果您的院子裡種有茴香，很可能就有茴芹鳳蝶的毛毛蟲！仔細看莖幹和葉片——牠們起初看起來像鳥糞，然後蛻變為令人驚嘆的帶橙色斑點的綠色毛毛蟲。」</p>
   </div>
+
+  <!-- 📸 PHOTO — add images/anise-swallowtail.jpg to your images/ folder -->
+  <div class="photo-section">
+    <h2>📸 Butterfly Photo ／ 蝴蝶照片</h2>
+    <div class="photo-frame">
+      <div class="photo-item">
+        <img src="images/AniseSwallowtail.jpg"
+             alt="Anise Swallowtail butterfly Papilio zelicaon"
+             onerror="this.outerHTML='<div class=photo-missing><span>📷</span><span>Photo coming soon ／ 照片即將加入<br>Save as: images/anise-swallowtail.jpg</span></div>'">
+        <div class="photo-caption">
+          <strong>Anise Swallowtail ／ 茴芹鳳蝶</strong><br>
+          <em>Papilio zelicaon</em>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="qr-section"><h2>📱 Scan to See More Photos ／ 掃描查看更多照片</h2>
     <div class="qr-grid">
       <div class="qr-item"><div class="qr-box" id="q-ans1"></div><p><strong>Adult Butterfly 成蝶</strong></p></div>
@@ -482,6 +592,23 @@
     <p><em>"The caterpillar looks EXACTLY like bird poop — not just a little bit, but convincingly so at every stage of its growth, even when it's 2 inches long. It's one of nature's greatest disguises!"</em></p>
     <p>「這種毛毛蟲看起來<strong>完全</strong>像鳥糞——不只是有一點像，而是在每個成長階段都令人信服，即使已長達 5 公分！這是大自然最精彩的偽裝之一！」</p>
   </div>
+
+  <!-- 📸 PHOTO — add images/western-giant-swallowtail.jpg to your images/ folder -->
+  <div class="photo-section">
+    <h2>📸 Butterfly Photo ／ 蝴蝶照片</h2>
+    <div class="photo-frame">
+      <div class="photo-item">
+        <img src="images/WesternGiantSwallowtail.jpg"
+             alt="Western Giant Swallowtail butterfly Papilio rumiko"
+             onerror="this.outerHTML='<div class=photo-missing><span>📷</span><span>Photo coming soon ／ 照片即將加入<br>Save as: images/western-giant-swallowtail.jpg</span></div>'">
+        <div class="photo-caption">
+          <strong>Western Giant Swallowtail ／ 西方巨鳳蝶</strong><br>
+          <em>Papilio rumiko</em>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="qr-section"><h2>📱 Scan to See More Photos ／ 掃描查看更多照片</h2>
     <div class="qr-grid">
       <div class="qr-item"><div class="qr-box" id="q-wgs1"></div><p><strong>Adult Butterfly 成蝶</strong></p></div>
@@ -551,6 +678,23 @@
     <p><em>"Can you see the poodle? Look closely at the male's forewing — the black border outlines ears, an eye, and a nose. Once you see it, you can never unsee it! That's exactly how this butterfly got its name."</em></p>
     <p>「您看得出貴賓狗的臉嗎？仔細看雄蝶的前翅——黑色邊框勾勒出耳朵、眼睛和鼻子的輪廓。一旦看出來，就再也忘不掉了！這正是這種蝴蝶名字的由來。」</p>
   </div>
+
+  <!-- 📸 PHOTO — add images/california-dogface.jpg to your images/ folder -->
+  <div class="photo-section">
+    <h2>📸 Butterfly Photo ／ 蝴蝶照片</h2>
+    <div class="photo-frame">
+      <div class="photo-item">
+        <img src="images/CaliforniaDogface.jpg"
+             alt="California Dogface butterfly Zerene eurydice"
+             onerror="this.outerHTML='<div class=photo-missing><span>📷</span><span>Photo coming soon ／ 照片即將加入<br>Save as: images/california-dogface.jpg</span></div>'">
+        <div class="photo-caption">
+          <strong>California Dogface ／ 加州狗臉蝶</strong><br>
+          <em>Zerene eurydice</em>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="qr-section"><h2>📱 Scan to See More Photos ／ 掃描查看更多照片</h2>
     <div class="qr-grid">
       <div class="qr-item"><div class="qr-box" id="q-dog1"></div><p><strong>Male Butterfly 雄蝶</strong></p></div>
@@ -626,6 +770,23 @@
     <p><em>"If a Red Admiral lands on you today — consider yourself lucky! This butterfly is famously people-friendly and is known to use humans as a resting perch. You've just become part of nature!"</em></p>
     <p>「如果今天有一隻紅蛺蝶停在您身上，那您真的很幸運！紅蛺蝶以親近人類著稱，牠們喜歡把人當作休息的棲木。恭喜您，您剛剛成為大自然的一部分了！」</p>
   </div>
+
+  <!-- 📸 PHOTO — add images/red-admiral.jpg to your images/ folder -->
+  <div class="photo-section">
+    <h2>📸 Butterfly Photo ／ 蝴蝶照片</h2>
+    <div class="photo-frame">
+      <div class="photo-item">
+        <img src="images/RedAdmiral.jpg"
+             alt="Red Admiral butterfly Vanessa atalanta"
+             onerror="this.outerHTML='<div class=photo-missing><span>📷</span><span>Photo coming soon ／ 照片即將加入<br>Save as: images/red-admiral.jpg</span></div>'">
+        <div class="photo-caption">
+          <strong>Red Admiral ／ 紅蛺蝶</strong><br>
+          <em>Vanessa atalanta</em>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="qr-section"><h2>📱 Scan to See More Photos ／ 掃描查看更多照片</h2>
     <div class="qr-grid">
       <div class="qr-item"><div class="qr-box" id="q-ra1"></div><p><strong>Adult Butterfly 成蝶</strong></p></div>
@@ -702,6 +863,23 @@
     <p><em>"The Monarch you see today has never been to Mexico — and yet it knows exactly how to get there. It navigates using the sun as a compass and an internal clock. No GPS needed — just millions of years of evolution!"</em></p>
     <p>「您今天看到的這隻帝王蝶，從來沒有去過墨西哥——但牠卻清楚知道怎麼飛到那裡。牠以太陽為指南針，靠著體內的生物時鐘導航。不需要GPS——只需要數百萬年演化出來的本能！」</p>
   </div>
+
+  <!-- 📸 MONARCH PHOTO — save your uploaded image as images/monarch.jpg -->
+  <div class="photo-section">
+    <h2>📸 Butterfly Photo ／ 蝴蝶照片</h2>
+    <div class="photo-frame">
+      <div class="photo-item">
+        <img src="images/Monarch.jpg"
+             alt="Monarch Butterfly (Danaus plexippus) adult nectaring on yellow flower"
+             onerror="this.outerHTML='<div class=photo-missing><span>📷</span><span>Photo coming soon ／ 照片即將加入<br>Save as: images/monarch.jpg</span></div>'">
+        <div class="photo-caption">
+          <strong>Monarch Butterfly ／ 帝王蝶</strong><br>
+          <em>Danaus plexippus</em> — Adult nectaring on yellow cosmos flower ／ 成蝶在黃色秋英花上吸蜜
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="qr-section"><h2>📱 Scan to See More Photos ／ 掃描查看更多照片</h2>
     <div class="qr-grid">
       <div class="qr-item"><div class="qr-box" id="q-mon1"></div><p><strong>Adult Butterfly 成蝶</strong></p></div>
@@ -778,6 +956,23 @@
     <p><em>"The Mourning Cloak can live nearly a YEAR — almost unheard of for a butterfly! It survives both summer heat (estivation) AND winter cold (hibernation). It is often seen flying on warm winter days, sometimes before the snow has even melted!"</em></p>
     <p>「哀蛺蝶可以活將近一年——這在蝴蝶中幾乎是前所未聞的！牠能度過夏天的酷熱（夏眠）也能熬過冬天的嚴寒（冬眠）。牠常在溫暖的冬日飛翔，有時積雪尚未融化就已現身！」</p>
   </div>
+
+  <!-- 📸 PHOTO — add images/mourning-cloak.jpg to your images/ folder -->
+  <div class="photo-section">
+    <h2>📸 Butterfly Photo ／ 蝴蝶照片</h2>
+    <div class="photo-frame">
+      <div class="photo-item">
+        <img src="images/MourningCloak.jpg"
+             alt="Mourning Cloak butterfly Nymphalis antiopa"
+             onerror="this.outerHTML='<div class=photo-missing><span>📷</span><span>Photo coming soon ／ 照片即將加入<br>Save as: images/mourning-cloak.jpg</span></div>'">
+        <div class="photo-caption">
+          <strong>Mourning Cloak ／ 哀蛺蝶</strong><br>
+          <em>Nymphalis antiopa</em>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="qr-section"><h2>📱 Scan to See More Photos ／ 掃描查看更多照片</h2>
     <div class="qr-grid">
       <div class="qr-item"><div class="qr-box" id="q-mc1"></div><p><strong>Adult Butterfly 成蝶</strong></p></div>
@@ -854,6 +1049,23 @@
     <p><em>"In 2024, scientists confirmed that Painted Ladies crossed the Atlantic Ocean — over 4,000 miles! They were the first insect ever documented to cross an ocean. Scientists discovered this by analyzing wing pollen and stable isotopes. Talk about a world traveler!"</em></p>
     <p>「2024年，科學家確認彩蛺蝶橫越了大西洋——超過 6,400 公里！牠們是有記錄以來第一種跨越海洋的昆蟲。科學家藉由分析翅膀上的花粉和穩定同位素發現了這一事實。這才是真正的世界旅行家！」</p>
   </div>
+
+  <!-- 📸 PHOTO — add images/painted-lady.jpg to your images/ folder -->
+  <div class="photo-section">
+    <h2>📸 Butterfly Photo ／ 蝴蝶照片</h2>
+    <div class="photo-frame">
+      <div class="photo-item">
+        <img src="images/PaintedLady.jpg"
+             alt="Painted Lady butterfly Vanessa cardui"
+             onerror="this.outerHTML='<div class=photo-missing><span>📷</span><span>Photo coming soon ／ 照片即將加入<br>Save as: images/painted-lady.jpg</span></div>'">
+        <div class="photo-caption">
+          <strong>Painted Lady ／ 彩蛺蝶</strong><br>
+          <em>Vanessa cardui</em>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="qr-section"><h2>📱 Scan to See More Photos ／ 掃描查看更多照片</h2>
     <div class="qr-grid">
       <div class="qr-item"><div class="qr-box" id="q-pl1"></div><p><strong>Adult Butterfly 成蝶</strong></p></div>
@@ -930,6 +1142,23 @@
     <p><em>"Count the spots! One spot = male. Two spots = female. Now you're a butterfly expert! And remember — even though the caterpillar is a garden pest, the adult butterfly is an important pollinator for crops."</em></p>
     <p>「數黑點！一個黑點 = 雄蝶。兩個黑點 = 雌蝶。您現在已經是蝴蝶專家了！記住——雖然毛毛蟲是菜園害蟲，但成蝶卻是農作物的重要授粉者。」</p>
   </div>
+
+  <!-- 📸 PHOTO — add images/cabbage-white.jpg to your images/ folder -->
+  <div class="photo-section">
+    <h2>📸 Butterfly Photo ／ 蝴蝶照片</h2>
+    <div class="photo-frame">
+      <div class="photo-item">
+        <img src="images/CabbageWhite.jpg"
+             alt="Cabbage White butterfly Pieris rapae"
+             onerror="this.outerHTML='<div class=photo-missing><span>📷</span><span>Photo coming soon ／ 照片即將加入<br>Save as: images/cabbage-white.jpg</span></div>'">
+        <div class="photo-caption">
+          <strong>Cabbage White ／ 菜粉蝶</strong><br>
+          <em>Pieris rapae</em>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="qr-section"><h2>📱 Scan to See More Photos ／ 掃描查看更多照片</h2>
     <div class="qr-grid">
       <div class="qr-item"><div class="qr-box" id="q-cbw1"></div><p><strong>Adult Butterfly 成蝶</strong></p></div>
@@ -1002,6 +1231,23 @@
     <p><em>"Skippers are sometimes called the 'third group' between butterflies and moths. Look at the antennae tips — true butterflies have smooth club-shaped tips, but skippers have a hooked tip like a bent finger. That little hook is the key field mark!"</em></p>
     <p>「弄蝶有時被稱為蝴蝶和蛾之間的『第三群體』。看看觸角的尖端——真正的蝴蝶觸角尖端是光滑的球棒狀，但弄蝶的尖端像彎曲的手指一樣帶有鉤子。那個小鉤子就是關鍵的辨識特徵！」</p>
   </div>
+
+  <!-- 📸 PHOTO — add images/sandhill-skipper.jpg to your images/ folder -->
+  <div class="photo-section">
+    <h2>📸 Butterfly Photo ／ 蝴蝶照片</h2>
+    <div class="photo-frame">
+      <div class="photo-item">
+        <img src="images/SandhillSkipper.jpg"
+             alt="Sandhill Skipper butterfly Polites sabuleti"
+             onerror="this.outerHTML='<div class=photo-missing><span>📷</span><span>Photo coming soon ／ 照片即將加入<br>Save as: images/sandhill-skipper.jpg</span></div>'">
+        <div class="photo-caption">
+          <strong>Sandhill Skipper ／ 沙丘弄蝶</strong><br>
+          <em>Polites sabuleti</em>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="qr-section"><h2>📱 Scan to See More Photos ／ 掃描查看更多照片</h2>
     <div class="qr-grid">
       <div class="qr-item"><div class="qr-box" id="q-ss1"></div><p><strong>Male Adult 雄性成蝶</strong></p></div>
@@ -1083,6 +1329,23 @@
     <p><em>"The Sleepy Duskywing gets its name because adults are often found resting with wings spread flat on leaves or bark in the sun — looking like they're taking a nap! The name also hints at its early-season appearance, before most other butterflies have 'woken up' for the year."</em></p>
     <p>「睡暮翅弄蝶的名字源於成蝶常常在葉片或樹皮上平展翅膀曬太陽休息——看起來就像在打盹！這個名字也暗示牠出現在早春，比大多數其他蝴蝶在一年中『甦醒』更早。」</p>
   </div>
+
+  <!-- 📸 PHOTO — add images/sleepy-duskywing.jpg to your images/ folder -->
+  <div class="photo-section">
+    <h2>📸 Butterfly Photo ／ 蝴蝶照片</h2>
+    <div class="photo-frame">
+      <div class="photo-item">
+        <img src="images/SleepyDuskywing.jpg"
+             alt="Sleepy Duskywing butterfly Erynnis brizo"
+             onerror="this.outerHTML='<div class=photo-missing><span>📷</span><span>Photo coming soon ／ 照片即將加入<br>Save as: images/sleepy-duskywing.jpg</span></div>'">
+        <div class="photo-caption">
+          <strong>Sleepy Duskywing ／ 睡暮翅弄蝶</strong><br>
+          <em>Erynnis brizo</em>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="qr-section"><h2>📱 Scan to See More Photos ／ 掃描查看更多照片</h2>
     <div class="qr-grid">
       <div class="qr-item"><div class="qr-box" id="q-sd1"></div><p><strong>Adult Butterfly 成蝶</strong></p></div>
